@@ -1,31 +1,29 @@
-package org.firstinspires.ftc.teamcode.opmode.teleop;
+package org.firstinspires.ftc.teamcode.opmode.dev;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.firstinspires.ftc.teamcode.hardware.MeccRobot;
+import org.firstinspires.ftc.teamcode.hardware.MXSensor;
 
-@TeleOp (name = "Paired Main", group = "_main")
-public class PairedMain extends LinearOpMode {
+@TeleOp (name = "Dev MXSensor", group = "dev")
+public class DevMXSensor extends LinearOpMode {
 
-    private MeccRobot robot = new MeccRobot(this);
+    private MXSensor mxSensor = new MXSensor(this, 0);
 
     @Override
     public void runOpMode() throws InterruptedException {
+        mxSensor.init(hardwareMap);
 
-        robot.init(hardwareMap);
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
         waitForStart();
 
         while (opModeIsActive() && !isStopRequested()) {
-            robot.loop(gamepad1, gamepad2);
-            robot.telemetry(telemetry);
+            mxSensor.telemetry(telemetry);
 
             telemetry.update();
         }
     }
-
 }
