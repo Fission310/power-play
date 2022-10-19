@@ -8,7 +8,8 @@ import com.stuyfission.fissionlib.util.Mechanism;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
-public class MXSensor extends Mechanism {
+// Class for Ultrasonic Analog Sensors
+public class UASensor extends Mechanism {
 
     /* TODO: sensor pcp -> hub
         black - ground -> ground
@@ -18,34 +19,34 @@ public class MXSensor extends Mechanism {
     */
 
     // Analog Sensors, they report voltage
-    private AnalogInput mxSensor;
-    private AnalogInputController mxSensorController;
+    private AnalogInput uaSensor;
+    private AnalogInputController uaSensorController;
     private int channel = -1;
 
     // rev hubs supply 3.3 volts to analog ports
     double SUPPLIED_VOLTAGE = 3.3;
 
-    public MXSensor(LinearOpMode opMode, int channel) {
+    public UASensor(LinearOpMode opMode, int channel) {
         this.opMode = opMode;
         this.channel = channel;
     }
 
     @Override
     public void init(HardwareMap hwMap) {
-        mxSensorController = hwMap.get(AnalogInputController.class, "MXSensor");
+        uaSensorController = hwMap.get(AnalogInputController.class, "UASensor");
 
-        /* TODO: Change based on corresponding wire soldered to AN (Analog Voltage) on sensor
+        /* TODO: Change channel based on corresponding wire soldered to AN (Analog Voltage) on sensor
             and plugged into REV Hub analog port pinout:
             https://docs.revrobotics.com/duo-control/control-system-overview/port-pinouts
         */
-        mxSensor = new AnalogInput(mxSensorController, channel);
+        uaSensor = new AnalogInput(uaSensorController, channel);
     }
 
     private double getDistanceMM() {
 
         // Analog sensor, get voltage readout from specified channel above
         // Vm = measured voltage
-        double Vm = mxSensor.getVoltage();
+        double Vm = uaSensor.getVoltage();
 
         // convert voltage to distance
 
