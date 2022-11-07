@@ -1,5 +1,8 @@
 package org.firstinspires.ftc.teamcode.hardware;
 
+import com.ThermalEquilibrium.homeostasis.Filters.FilterAlgorithms.KalmanFilter;
+import com.ThermalEquilibrium.homeostasis.Filters.FilterAlgorithms.LowPassFilter;
+import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.AnalogInputController;
@@ -9,7 +12,8 @@ import com.stuyfission.fissionlib.util.Mechanism;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 // Class for Ultrasonic Analog Sensors
-public class UASensor extends Mechanism {
+@Config
+public class MXSensor extends Mechanism {
 
     /* TODO: sensor pcp -> hub
         black - ground -> ground
@@ -19,49 +23,57 @@ public class UASensor extends Mechanism {
     */
 
     // Analog Sensors, they report voltage
-    private AnalogInput uaSensor;
-    private AnalogInputController uaSensorController;
-    private int channel = -1;
+    private AnalogInput mxSensor;
 
     // rev hubs supply 3.3 volts to analog ports
     double SUPPLIED_VOLTAGE = 3.3;
 
-    public UASensor(LinearOpMode opMode, int channel) {
+    // LowPassFilter
+    // higher gain values -> smoother graph, more lag
+    public static double GAIN = 0.95;
+    LowPassFilter lowPassFilter = new LowPassFilter(GAIN);
+
+    public MXSensor(LinearOpMode opMode) {
         this.opMode = opMode;
-        this.channel = channel;
     }
 
     @Override
     public void init(HardwareMap hwMap) {
-        uaSensorController = hwMap.get(AnalogInputController.class, "UASensor");
-
         /* TODO: Change channel based on corresponding wire soldered to AN (Analog Voltage) on sensor
             and plugged into REV Hub analog port pinout:
             https://docs.revrobotics.com/duo-control/control-system-overview/port-pinouts
         */
-        uaSensor = new AnalogInput(uaSensorController, channel);
+        mxSensor = hwMap.get(AnalogInput.class, "UASensor");
     }
 
     private double getDistanceMM() {
 
         // Analog sensor, get voltage readout from specified channel above
         // Vm = measured voltage
-        double Vm = uaSensor.getVoltage();
+        double Vm = mxSensor.getVoltage();
 
         // convert voltage to distance
 
-        // Vi = volts per 5mm
+        // Vi = volts per 3.3mm
         double Vi = SUPPLIED_VOLTAGE / 1024;
 
         // Ri = range in mm
-        double Ri = 5 * (Vm / Vi);
+        double Ri = 3.3 * (Vm / Vi);
 
         return Ri;
     }
 
+    private double getLowPassMM() {
+        double currentValue = getDistanceMM();
+        double estimate = lowPassFilter.estimate(currentValue);
+        return estimate;
+    }
+
     @Override
     public void telemetry(Telemetry telemetry) {
-        telemetry.addData("dist in mm:", getDistanceMM());
+        telemetry.addData("MM", getDistanceMM());
+        telemetry.addData("LowPass MM:", getLowPassMM());
+        telemetry.addData("LowPass Offset", Math.abs(getLowPassMM() - getDistanceMM()));
     }
 
 }
