@@ -31,20 +31,12 @@ public class DevMXSensor extends LinearOpMode {
         waitForStart();
 
         while (opModeIsActive() && !isStopRequested()) {
-
-            long startTime = System.nanoTime();
-
             // clear cache
             for (LynxModule hub : allHubs) {
                 hub.clearBulkCache();
             }
 
             mxSensor.telemetry(telemetry);
-
-            long endTime   = System.nanoTime();
-            long totalTime = endTime - startTime;
-            telemetry.addData("looptime:", totalTime);
-
             telemetry.update();
         }
     }

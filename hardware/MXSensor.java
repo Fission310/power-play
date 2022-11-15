@@ -15,6 +15,13 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 @Config
 public class MXSensor extends Mechanism {
 
+    public enum Side {
+        LEFT,
+        RIGHT,
+        ALL
+    }
+    Side side;
+
     /* TODO: sensor pcp -> hub
         black - ground -> ground
         red - V+ (next to ground) -> 3.3V
@@ -23,7 +30,8 @@ public class MXSensor extends Mechanism {
     */
 
     // Analog Sensors, they report voltage
-    private AnalogInput mxSensor;
+    private AnalogInput mxSensorLeft;
+    private AnalogInput mxSensorRight;
 
     // rev hubs supply 3.3 volts to analog ports
     double SUPPLIED_VOLTAGE = 3.3;
@@ -43,37 +51,46 @@ public class MXSensor extends Mechanism {
             and plugged into REV Hub analog port pinout:
             https://docs.revrobotics.com/duo-control/control-system-overview/port-pinouts
         */
-        mxSensor = hwMap.get(AnalogInput.class, "UASensor");
+        mxSensorLeft = hwMap.get(AnalogInput.class, "MXSensorLeft");
+        mxSensorRight = hwMap.get(AnalogInput.class, "MXSensorRight");
     }
 
-    private double getDistanceMM() {
+    public double getDistanceMM(Side side) {
+        // measured voltage -- (default to all)
+        double vm = (mxSensorLeft.getVoltage() + mxSensorRight.getVoltage()) / 2.0;
+        // volts per 3.3mm
+        double vi = SUPPLIED_VOLTAGE / 1024;
+        // range in mm
+        double ri;
 
-        // Analog sensor, get voltage readout from specified channel above
-        // Vm = measured voltage
-        double Vm = mxSensor.getVoltage();
+        switch (side) {
+            case LEFT:
+                vm = mxSensorLeft.getVoltage();
+                break;
+            case RIGHT:
+                vm = mxSensorRight.getVoltage();
+                break;
+            case ALL:
+                vm = (mxSensorLeft.getVoltage() + mxSensorRight.getVoltage()) / 2.0;
+                break;
+        }
 
-        // convert voltage to distance
+        ri = 3.3 * (vm / vi);
 
-        // Vi = volts per 3.3mm
-        double Vi = SUPPLIED_VOLTAGE / 1024;
-
-        // Ri = range in mm
-        double Ri = 3.3 * (Vm / Vi);
-
-        return Ri;
+        return ri;
     }
 
-    private double getLowPassMM() {
-        double currentValue = getDistanceMM();
+    public double getLowPassMM(Side side) {
+        double currentValue = getDistanceMM(side);
         double estimate = lowPassFilter.estimate(currentValue);
         return estimate;
     }
 
     @Override
     public void telemetry(Telemetry telemetry) {
-        telemetry.addData("MM", getDistanceMM());
-        telemetry.addData("LowPass MM:", getLowPassMM());
-        telemetry.addData("LowPass Offset", Math.abs(getLowPassMM() - getDistanceMM()));
+        telemetry.addData("MM", getDistanceMM(Side.ALL));
+        telemetry.addData("LowPass MM:", getLowPassMM(Side.ALL));
+        telemetry.addData("LowPass Offset", Math.abs(getLowPassMM(Side.ALL) - getDistanceMM(Side.ALL)));
     }
 
 }
