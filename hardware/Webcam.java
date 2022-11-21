@@ -84,12 +84,12 @@ public class Webcam extends Mechanism {
         static final int SCREEN_WIDTH = 480;
         static final int SCREEN_HEIGHT = 864;
 
-        static final int FIRST_THIRD_WIDTH = SCREEN_WIDTH/3 + 40;
-        static final int SECOND_THIRD_WIDTH = (SCREEN_WIDTH/3) * 2 - 40;
+        static final int FIRST_THIRD_WIDTH = SCREEN_WIDTH/3 + 10;
+        static final int SECOND_THIRD_WIDTH = (SCREEN_WIDTH/3) * 2 - 10;
 
         static final Rect ROI = new Rect(
-                new Point(FIRST_THIRD_WIDTH, 360),
-                new Point(SECOND_THIRD_WIDTH, SCREEN_HEIGHT-360)
+                new Point(FIRST_THIRD_WIDTH, 10),
+                new Point(SECOND_THIRD_WIDTH, SCREEN_HEIGHT-10)
         );
 
         public SideDetector(Telemetry t) {
@@ -112,31 +112,31 @@ public class Webcam extends Mechanism {
             Imgproc.cvtColor(input, mat, Imgproc.COLOR_RGB2HSV);
 
             // adjust mat gamma
-            adjustGamma(mat, mat, GAMMA);
+//            adjustGamma(mat, mat, GAMMA);
             //
 
             // adjust input gamma for viewing
-            adjustGamma(input, input, GAMMA);
+//            adjustGamma(input, input, GAMMA);
             //
 
-            Scalar lowMagenta = new Scalar(140, 70, 50);
-            Scalar highMagenta = new Scalar(150, 255, 255);
+            Scalar lowMagenta = new Scalar(160, 70, 50);
+            Scalar highMagenta = new Scalar(170, 255, 255);
             Mat magentaMask = new Mat();
             Core.inRange(mat, lowMagenta, highMagenta, magentaMask);
 
-            Scalar lowGreen = new Scalar(45, 70, 50);
-            Scalar highGreen = new Scalar(60, 255, 255);
+            Scalar lowGreen = new Scalar(40, 50, 50);
+            Scalar highGreen = new Scalar(75, 255, 255);
             Mat greenMask = new Mat();
             Core.inRange(mat, lowGreen, highGreen, greenMask);
 
             // TODO: try this yellow:
-            /*
-            Scalar lowHSV = new Scalar(23, 50, 70);
-            Scalar highHSV = new Scalar(32, 255, 255);
-             */
-
+//            /*
             Scalar lowYellow = new Scalar(23, 50, 70);
             Scalar highYellow = new Scalar(32, 255, 255);
+//             */
+
+//            Scalar lowYellow = new Scalar(23, 50, 70);
+//            Scalar highYellow = new Scalar(32, 255, 255);
             Mat yellowMask = new Mat();
             Core.inRange(mat, lowYellow, highYellow, yellowMask);
 
@@ -149,7 +149,7 @@ public class Webcam extends Mechanism {
             telemetry.addData("yellowVal", yellowValue);
 
             magentaMask.release();
-            greenMask.release();
+//            greenMask.release();
             yellowMask.release();
 
             double maxVal = Math.max(Math.max(magentaValue, greenValue), yellowValue);
@@ -191,7 +191,7 @@ public class Webcam extends Mechanism {
             }
 
             mat.release();
-            return input;
+            return greenMask;
         }
 
         public Side getSide() {
