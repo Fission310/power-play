@@ -1,11 +1,13 @@
-package org.firstinspires.ftc.teamcode.opmode.auton;
+package org.firstinspires.ftc.teamcode.opmode.auton.paths;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.hardware.Webcam.Side;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 
+@Config
 public class RedPath {
 
     private SampleMecanumDrive drive;
