@@ -85,11 +85,14 @@ public class Webcam extends Mechanism {
         static final int SCREEN_HEIGHT = 864;
 
         static final int FIRST_THIRD_WIDTH = SCREEN_WIDTH/3 + 10;
-        static final int SECOND_THIRD_WIDTH = (SCREEN_WIDTH/3) * 2 - 10;
+        static final int SECOND_THIRD_WIDTH = FIRST_THIRD_WIDTH * 2 - 10;
+
+        static final int FIRST_THIRD_HEIGHT = SCREEN_HEIGHT/3;
+        static final int SECOND_THIRD_HEIGHT = FIRST_THIRD_HEIGHT*2;
 
         static final Rect ROI = new Rect(
-                new Point(FIRST_THIRD_WIDTH, 10),
-                new Point(SECOND_THIRD_WIDTH, SCREEN_HEIGHT-10)
+                new Point(FIRST_THIRD_WIDTH, FIRST_THIRD_HEIGHT),
+                new Point(SECOND_THIRD_WIDTH, SECOND_THIRD_HEIGHT)
         );
 
         public SideDetector(Telemetry t) {
@@ -119,8 +122,8 @@ public class Webcam extends Mechanism {
 //            adjustGamma(input, input, GAMMA);
             //
 
-            Scalar lowMagenta = new Scalar(160, 70, 50);
-            Scalar highMagenta = new Scalar(170, 255, 255);
+            Scalar lowMagenta = new Scalar(155, 50, 50);
+            Scalar highMagenta = new Scalar(165, 255, 255);
             Mat magentaMask = new Mat();
             Core.inRange(mat, lowMagenta, highMagenta, magentaMask);
 
@@ -149,7 +152,7 @@ public class Webcam extends Mechanism {
             telemetry.addData("yellowVal", yellowValue);
 
             magentaMask.release();
-//            greenMask.release();
+            greenMask.release();
             yellowMask.release();
 
             double maxVal = Math.max(Math.max(magentaValue, greenValue), yellowValue);
@@ -191,7 +194,7 @@ public class Webcam extends Mechanism {
             }
 
             mat.release();
-            return greenMask;
+            return input;
         }
 
         public Side getSide() {
