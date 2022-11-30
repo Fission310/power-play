@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.hardware;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -7,7 +8,10 @@ import com.stuyfission.fissionlib.util.Mechanism;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
+@Config
 public class SlidesFSM extends Mechanism {
+
+    public static long RETRACT_STATE_DELAY = 100;
 
     private SlidesMotors slidesMotors = new SlidesMotors(opMode);
 
@@ -31,13 +35,12 @@ public class SlidesFSM extends Mechanism {
         WAIT_EXTEND,
         WAIT_RETRACT
     }
-    SlidesState slidesState;
+    public SlidesState slidesState = SlidesState.REST;
 
     public Runnable low = () -> {
         try {
             slidesMotors.extendLow();
-            Thread.sleep(1000);
-            // TODO: Thread.sleep to allow mechanisms to work
+            Thread.sleep(RETRACT_STATE_DELAY);
             slidesState = SlidesState.WAIT_RETRACT;
         } catch (InterruptedException e) {
             e.printStackTrace();
@@ -47,7 +50,7 @@ public class SlidesFSM extends Mechanism {
     public Runnable medium = () -> {
       try {
           slidesMotors.extendMedium();
-          Thread.sleep(1000);
+          Thread.sleep(RETRACT_STATE_DELAY);
           slidesState = SlidesState.WAIT_RETRACT;
       } catch (InterruptedException e) {
           e.printStackTrace();
@@ -57,7 +60,7 @@ public class SlidesFSM extends Mechanism {
     public Runnable high = () -> {
       try {
           slidesMotors.extendHigh();
-          Thread.sleep(1000);
+          Thread.sleep(RETRACT_STATE_DELAY);
           slidesState = SlidesState.WAIT_RETRACT;
       } catch (InterruptedException e) {
           e.printStackTrace();
