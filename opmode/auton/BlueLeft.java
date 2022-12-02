@@ -5,31 +5,29 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.hardware.Webcam;
-import org.firstinspires.ftc.teamcode.hardware.Webcam.Side;
-import org.firstinspires.ftc.teamcode.opmode.auton.paths.RedPath;
+import org.firstinspires.ftc.teamcode.opmode.auton.paths.BluePath;
 
-@Autonomous
-public class Red extends LinearOpMode {
-
+@Autonomous (name = "BlueLEFT", group = "_blue")
+public class BlueLeft extends LinearOpMode {
     private SampleMecanumDrive drive;
     private Webcam webcam = new Webcam(this);
-    private RedPath redPath;
+    private BluePath bluePath;
 
     @Override
     public void runOpMode() throws InterruptedException {
         drive = new SampleMecanumDrive(hardwareMap);
         webcam.init(hardwareMap);
 
-        drive.setPoseEstimate(redPath.LEFT_START_POSE);
+        drive.setPoseEstimate(bluePath.RIGHT_START_POSE);
 
-        redPath = new RedPath(drive);
+        bluePath = new BluePath(drive);
 
         waitForStart();
 
-        Side side = webcam.side();
+        Webcam.Side side = webcam.side();
         webcam.stopStreaming();
 
-        drive.followTrajectorySequenceAsync(redPath.leftPath(side));
+        drive.followTrajectorySequenceAsync(bluePath.leftPath(side));
 
         while (opModeIsActive() && !isStopRequested()) {
             drive.update();
