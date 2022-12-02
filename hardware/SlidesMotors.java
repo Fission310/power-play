@@ -24,7 +24,7 @@ public class SlidesMotors extends Mechanism {
     public static double MAX_ACCEL = 20;
     public static double RETRACTION_MULTIPLIER = 0.2;
 
-    public static double kP = 0;
+    public static double kP = 0.1;
     public static double kI = 0;
     public static double kD = 0;
     public static double kF = 0;
@@ -40,7 +40,7 @@ public class SlidesMotors extends Mechanism {
         leftSlideMotor = new MotionProfiledDcMotor(hwMap, "leftSlideMotor");
         leftSlideMotor.setWheelConstants(WHEEL_RADIUS, GEAR_RATIO, TICKS_PER_REV);
         leftSlideMotor.setMotionConstraints(MAX_VEL, MAX_ACCEL);
-        leftSlideMotor.setRetractionMultiplier(0.2);
+        leftSlideMotor.setRetractionMultiplier(RETRACTION_MULTIPLIER);
         leftSlideMotor.setPIDCoefficients(kP, kI, kD, kF);
         leftSlideMotor.setTargetPosition(0);
         // TODO: uncomment to reverse motor direction
@@ -49,11 +49,11 @@ public class SlidesMotors extends Mechanism {
         rightSlideMotor = new MotionProfiledDcMotor(hwMap, "rightSlideMotor");
         rightSlideMotor.setWheelConstants(WHEEL_RADIUS, GEAR_RATIO, TICKS_PER_REV);
         rightSlideMotor.setMotionConstraints(MAX_VEL, MAX_ACCEL);
-        rightSlideMotor.setRetractionMultiplier(0.2);
+        rightSlideMotor.setRetractionMultiplier(RETRACTION_MULTIPLIER);
         rightSlideMotor.setPIDCoefficients(kP, kI, kD, kF);
         rightSlideMotor.setTargetPosition(0);
         // TODO: uncomment to reverse motor direction
-//        rightSlideMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+        rightSlideMotor.setDirection(DcMotorSimple.Direction.REVERSE);
     }
 
     public void rest() {
