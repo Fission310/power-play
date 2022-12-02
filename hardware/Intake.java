@@ -13,8 +13,8 @@ public class Intake extends Mechanism {
     CRServo leftIntake;
     CRServo rightIntake;
 
-    public static double LEFT_POWER = -1;
-    public static double RIGHT_POWER = 1;
+    public static double LEFT_POWER = 1;
+    public static double RIGHT_POWER = -1;
 
     public Intake(LinearOpMode opMode) {
         this.opMode = opMode;
