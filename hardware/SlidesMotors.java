@@ -20,18 +20,18 @@ public class SlidesMotors extends Mechanism {
     private static final double GEAR_RATIO = 1.0;
     private static final double TICKS_PER_REV = 145.1;
 
-    public static double MAX_VEL = 20;
-    public static double MAX_ACCEL = 20;
-    public static double RETRACTION_MULTIPLIER = 0.2;
+    public static double MAX_VEL = 50;
+    public static double MAX_ACCEL = 50;
+    public static double RETRACTION_MULTIPLIER = 0.5;
 
     public static double kP = 0.1;
     public static double kI = 0;
     public static double kD = 0;
     public static double kF = 0;
 
-    public static double POS_LOW = 1;
-    public static double POS_MEDIUM = 2;
-    public static double POS_HIGH = 3;
+    public static double POS_LOW = 33;
+    public static double POS_MEDIUM = 52;
+    public static double POS_HIGH = 65;
 
     public SlidesMotors(LinearOpMode opMode) { this.opMode = opMode; }
 
@@ -74,6 +74,11 @@ public class SlidesMotors extends Mechanism {
     public void extendHigh() {
         leftSlideMotor.setTargetPosition(POS_HIGH);
         rightSlideMotor.setTargetPosition(POS_HIGH);
+    }
+
+    public void descendABit() {
+        leftSlideMotor.setTargetPosition(leftSlideMotor.getPosition() - 3);
+        rightSlideMotor.setTargetPosition(rightSlideMotor.getPosition() - 3);
     }
 
     public void update() {

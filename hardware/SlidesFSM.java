@@ -12,12 +12,14 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 public class SlidesFSM extends Mechanism {
 
     public static long RETRACT_STATE_DELAY = 100;
+    public static long RETRACT_DELAY = 250;
 
     private SlidesMotors slidesMotors = new SlidesMotors(opMode);
 
     private Thread lowThread;
     private Thread mediumThread;
     private Thread highThread;
+    private Thread retractThread;
 
     public SlidesFSM(LinearOpMode opMode) { this.opMode = opMode; }
 
@@ -28,6 +30,7 @@ public class SlidesFSM extends Mechanism {
         lowThread = new Thread(low);
         mediumThread = new Thread(medium);
         highThread = new Thread(high);
+        retractThread = new Thread(retract);
     }
 
     public enum SlidesState {
@@ -67,6 +70,16 @@ public class SlidesFSM extends Mechanism {
       }
     };
 
+    public Runnable retract = () -> {
+        try {
+            Thread.sleep(0);
+            slidesMotors.rest();
+            slidesState = SlidesState.REST;
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    };
+
     @Override
     public void loop(Gamepad gamepad) {
         slidesMotors.update();
@@ -93,8 +106,13 @@ public class SlidesFSM extends Mechanism {
                 }
                 break;
             case WAIT_RETRACT:
-                if (gamepad.x) {
-                    slidesState = SlidesState.REST;
+                if (gamepad.dpad_down) {
+                    slidesMotors.descendABit();
+                }
+                else if (gamepad.x) {
+                    try {
+                        retractThread.start();
+                    } catch (IllegalThreadStateException ignored) {}
                 }
                 break;
         }

@@ -12,11 +12,11 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 public class ScoringFSM extends Mechanism {
 
     public static long ARM_TO_SCORE_DELAY = 200; // milliseconds
-    public static long ARM_TO_RESET_DELAY = 200; // milliseconds
+    public static long ARM_TO_RESET_DELAY = 500; // milliseconds
 
     private Arm arm = new Arm(opMode);
     private Clamp clamp = new Clamp(opMode);
-    private ConeSensor coneSensor = new ConeSensor(opMode);
+//    private ConeSensor coneSensor = new ConeSensor(opMode);
 
     private Thread scoreReadyThread;
     private Thread scoreResetThread;
@@ -27,7 +27,7 @@ public class ScoringFSM extends Mechanism {
     public void init(HardwareMap hwMap) {
         arm.init(hwMap);
         clamp.init(hwMap);
-        coneSensor.init(hwMap);
+//        coneSensor.init(hwMap);
 
         scoreReadyThread = new Thread(scoreReady);
         scoreResetThread = new Thread(scoreReset);
@@ -52,7 +52,7 @@ public class ScoringFSM extends Mechanism {
 
     public Runnable scoreReset = () -> {
         try {
-            clamp.open();
+//            clamp.open();
             Thread.sleep(ARM_TO_RESET_DELAY);
             scoreState = ScoreState.REST;
         } catch (InterruptedException e) {
@@ -69,11 +69,20 @@ public class ScoringFSM extends Mechanism {
                 scoreState = ScoreState.WAIT_INTAKE;
                 break;
             case WAIT_INTAKE:
-                if (coneSensor.hasCone()) {
+                if (gamepad.left_bumper) {
+                    clamp.open();
+                } else if (gamepad.right_bumper) {
+                    clamp.close();
+                } else if (gamepad.dpad_up) {
                     try {
                         scoreReadyThread.start();
                     } catch (IllegalThreadStateException ignored) {}
                 }
+//                if (coneSensor.hasCone()) {
+//                    try {
+//                        scoreReadyThread.start();
+//                    } catch (IllegalThreadStateException ignored) {}
+//                }
                 break;
             case SCORE:
                 clamp.close();
@@ -91,6 +100,7 @@ public class ScoringFSM extends Mechanism {
     @Override
     public void telemetry(Telemetry telemetry) {
         telemetry.addData("Current state", scoreState);
+//        coneSensor.telemetry(telemetry);
     }
 
 }

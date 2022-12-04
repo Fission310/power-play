@@ -38,7 +38,7 @@ public class Robot extends Mechanism {
     @Override
     public void telemetry(Telemetry telemetry) {
 //        mxSensor.telemetry(telemetry);
-        slidesFSM.telemetry(telemetry);
+//        slidesFSM.telemetry(telemetry);
         scoringFSM.telemetry(telemetry);
     }
 }

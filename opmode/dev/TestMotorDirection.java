@@ -10,28 +10,29 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 @TeleOp (name = "TestMotorDirection", group = "dev")
 public class TestMotorDirection extends LinearOpMode {
 
-//    DcMotorEx leftSlideMotor;
+    DcMotorEx leftSlideMotor;
     DcMotorEx rightSlideMotor;
 
     public static double POWER = 0.4;
 
     public void rotate() {
-//        leftSlideMotor.setPower(POWER);
+        leftSlideMotor.setPower(POWER);
         rightSlideMotor.setPower(POWER);
     }
 
     public void reverse() {
+        leftSlideMotor.setPower(-POWER);
         rightSlideMotor.setPower(-POWER);
     }
 
     public void stopRotation() {
-//        leftSlideMotor.setPower(0);
+        leftSlideMotor.setPower(0);
         rightSlideMotor.setPower(0);
     }
 
     @Override
     public void runOpMode() throws InterruptedException {
-//        leftSlideMotor = hardwareMap.get(DcMotorEx.class, "leftSlideMotor");
+        leftSlideMotor = hardwareMap.get(DcMotorEx.class, "leftSlideMotor");
 //        leftSlideMotor.setDirection(DcMotorSimple.Direction.REVERSE);
 
         rightSlideMotor = hardwareMap.get(DcMotorEx.class, "rightSlideMotor");

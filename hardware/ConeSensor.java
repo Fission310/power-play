@@ -5,6 +5,8 @@ import com.qualcomm.robotcore.hardware.ColorRangeSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.stuyfission.fissionlib.util.Mechanism;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
+
 public class ConeSensor extends Mechanism {
 
     private ColorRangeSensor coneSensor;
@@ -35,6 +37,13 @@ public class ConeSensor extends Mechanism {
 
     public boolean hasCone() {
         return hasConeColor(coneSensor);
+    }
+
+    @Override
+    public void telemetry(Telemetry telemetry) {
+        telemetry.addData("has cone?", hasCone());
+        telemetry.addData("blue value", getBlue(coneSensor));
+        telemetry.addData("red value", getRed(coneSensor));
     }
 
 }

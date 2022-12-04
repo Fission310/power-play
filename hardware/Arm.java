@@ -13,8 +13,8 @@ public class Arm extends Mechanism {
     private Servo leftArm;
     private Servo rightArm;
 
-    public static double INTAKE_POS = 0;
-    public static double SCORE_POS = 1;
+    public static double INTAKE_POS = 0.04;
+    public static double SCORE_POS = 0.72;
 
     public Arm(LinearOpMode opMode) { this.opMode = opMode; }
 
@@ -22,6 +22,8 @@ public class Arm extends Mechanism {
     public void init(HardwareMap hwMap) {
         leftArm = hwMap.get(Servo.class, "leftArm");
         rightArm = hwMap.get(Servo.class, "rightArm");
+
+        rightArm.setDirection(Servo.Direction.REVERSE);
     }
 
     public void intakePos() {
