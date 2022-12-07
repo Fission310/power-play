@@ -11,7 +11,7 @@ public class ConeSensor extends Mechanism {
 
     private ColorRangeSensor coneSensor;
 
-    public static double THRESHOLD = 100;
+    public static double THRESHOLD = 250;
 
     public ConeSensor(LinearOpMode opMode) { this.opMode = opMode; }
 

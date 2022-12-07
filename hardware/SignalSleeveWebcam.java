@@ -15,6 +15,7 @@ import org.opencv.core.Mat;
 import org.opencv.core.Point;
 import org.opencv.core.Rect;
 import org.opencv.core.Scalar;
+import org.opencv.*;
 import org.opencv.imgproc.Imgproc;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
@@ -22,14 +23,12 @@ import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvPipeline;
 
 @Config
-public class Webcam extends Mechanism {
+public class SignalSleeveWebcam extends Mechanism {
     private WebcamName webcamName;
     private OpenCvCamera camera;
     private SideDetector detector;
 
-    public static float GAMMA = (float) 0.4;
-
-    public Webcam(LinearOpMode opMode) {
+    public SignalSleeveWebcam(LinearOpMode opMode) {
         this.opMode = opMode;
     }
 
@@ -37,7 +36,7 @@ public class Webcam extends Mechanism {
     public void init(HardwareMap hwMap) {
         int cameraMonitorViewId = hwMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hwMap.appContext.getPackageName());
 
-        webcamName = hwMap.get(WebcamName.class, "Webcam");
+        webcamName = hwMap.get(WebcamName.class, "SignalSleeveWebcam");
         camera = OpenCvCameraFactory.getInstance().createWebcam(webcamName, cameraMonitorViewId);
 
         camera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
@@ -99,28 +98,9 @@ public class Webcam extends Mechanism {
             telemetry = new MultipleTelemetry(t, FtcDashboard.getInstance().getTelemetry());
         }
 
-        public void adjustGamma(Mat input, Mat destination, float gamma) {
-            float inverseGamma = 1 / gamma;
-
-            Mat lut = new Mat(1, 256, CvType.CV_8U);
-            for (int i = 0; i < 256; ++i) {
-                lut.put(0, i, (int) (Math.pow(i / 255.0f, inverseGamma) * 255));
-            }
-
-            Core.LUT(input, lut, destination);
-        }
-
         @Override
         public Mat processFrame(Mat input) {
             Imgproc.cvtColor(input, mat, Imgproc.COLOR_RGB2HSV);
-
-            // adjust mat gamma
-//            adjustGamma(mat, mat, GAMMA);
-            //
-
-            // adjust input gamma for viewing
-//            adjustGamma(input, input, GAMMA);
-            //
 
             Scalar lowMagenta = new Scalar(155, 50, 50);
             Scalar highMagenta = new Scalar(165, 255, 255);
@@ -132,14 +112,9 @@ public class Webcam extends Mechanism {
             Mat greenMask = new Mat();
             Core.inRange(mat, lowGreen, highGreen, greenMask);
 
-            // TODO: try this yellow:
-//            /*
             Scalar lowYellow = new Scalar(23, 50, 70);
             Scalar highYellow = new Scalar(32, 255, 255);
-//             */
 
-//            Scalar lowYellow = new Scalar(23, 50, 70);
-//            Scalar highYellow = new Scalar(32, 255, 255);
             Mat yellowMask = new Mat();
             Core.inRange(mat, lowYellow, highYellow, yellowMask);
 

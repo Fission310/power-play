@@ -5,21 +5,21 @@ import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.firstinspires.ftc.teamcode.hardware.Webcam;
+import org.firstinspires.ftc.teamcode.hardware.SignalSleeveWebcam;
 
-@TeleOp (name = "Dev Webcam", group = "dev")
-public class DevWebcam extends LinearOpMode {
+@TeleOp (name = "Dev Signal Sleeve Webcam", group = "dev")
+public class DevSignalSleeveWebcam extends LinearOpMode {
 
-    private Webcam webcam = new Webcam(this);
+    private SignalSleeveWebcam signalSleeveWebcam = new SignalSleeveWebcam(this);
 
     @Override
     public void runOpMode() throws InterruptedException {
-        webcam.init(hardwareMap);
+        signalSleeveWebcam.init(hardwareMap);
 
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
         waitForStart();
-        switch (webcam.side()) {
+        switch (signalSleeveWebcam.side()) {
             case ONE:
                 break;
             case TWO:
@@ -29,7 +29,7 @@ public class DevWebcam extends LinearOpMode {
             case NOT_FOUND:
                 break;
         }
-        webcam.stopStreaming();
+        signalSleeveWebcam.stopStreaming();
 
 //        while (opModeIsActive() && !isStopRequested()) {
 //            webcam.telemetry(telemetry);

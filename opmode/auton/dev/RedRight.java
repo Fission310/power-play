@@ -5,7 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
-import org.firstinspires.ftc.teamcode.hardware.Webcam;
+import org.firstinspires.ftc.teamcode.hardware.SignalSleeveWebcam;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 
 @Autonomous (name = "RedRIGHT", group = "red")
@@ -27,12 +27,12 @@ public class RedRight extends LinearOpMode {
 
 
     private SampleMecanumDrive drive;
-    private Webcam webcam = new Webcam(this);
+    private SignalSleeveWebcam signalSleeveWebcam = new SignalSleeveWebcam(this);
 //    private RedPath redPath;
 
     @Override
     public void runOpMode() throws InterruptedException {
-        webcam.init(hardwareMap);
+        signalSleeveWebcam.init(hardwareMap);
         drive = new SampleMecanumDrive(hardwareMap);
 //        redPath = new RedPath(drive);
 

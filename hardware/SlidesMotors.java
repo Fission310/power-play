@@ -22,7 +22,7 @@ public class SlidesMotors extends Mechanism {
 
     public static double MAX_VEL = 50;
     public static double MAX_ACCEL = 50;
-    public static double RETRACTION_MULTIPLIER = 0.5;
+    public static double RETRACTION_MULTIPLIER = 0.7;
 
     public static double kP = 0.1;
     public static double kI = 0;

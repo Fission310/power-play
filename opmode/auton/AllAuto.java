@@ -5,7 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
-import org.firstinspires.ftc.teamcode.hardware.Webcam;
+import org.firstinspires.ftc.teamcode.hardware.SignalSleeveWebcam;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 
 @Autonomous (name = "ALL AUTO", group = "_main")
@@ -15,12 +15,12 @@ public class AllAuto extends LinearOpMode {
     public static double LATERAL_DIST = 23;
 
     private SampleMecanumDrive drive;
-    private Webcam webcam = new Webcam(this);
+    private SignalSleeveWebcam signalSleeveWebcam = new SignalSleeveWebcam(this);
 
     @Override
     public void runOpMode() throws InterruptedException {
         drive = new SampleMecanumDrive(hardwareMap);
-        webcam.init(hardwareMap);
+        signalSleeveWebcam.init(hardwareMap);
 
         TrajectorySequence leftPark = drive.trajectorySequenceBuilder(new Pose2d())
                 .forward(FORWARD_DIST)
@@ -40,7 +40,7 @@ public class AllAuto extends LinearOpMode {
 
         waitForStart();
 
-        switch (webcam.side()) {
+        switch (signalSleeveWebcam.side()) {
             case ONE:
                 drive.followTrajectorySequenceAsync(leftPark);
                 break;

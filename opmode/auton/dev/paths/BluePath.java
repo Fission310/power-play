@@ -3,7 +3,7 @@ package org.firstinspires.ftc.teamcode.opmode.auton.dev.paths;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
-import org.firstinspires.ftc.teamcode.hardware.Webcam;
+import org.firstinspires.ftc.teamcode.hardware.SignalSleeveWebcam;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 
 public class BluePath {
@@ -40,7 +40,7 @@ public class BluePath {
         this.drive = drive;
     }
 
-    public TrajectorySequence leftPath(Webcam.Side side) {
+    public TrajectorySequence leftPath(SignalSleeveWebcam.Side side) {
         drive.setPoseEstimate(LEFT_START_POSE);
 
         TrajectorySequence leftParkSequence = drive.trajectorySequenceBuilder(LEFT_START_POSE)
@@ -72,7 +72,7 @@ public class BluePath {
         }
     }
 
-    public TrajectorySequence rightPath(Webcam.Side side) {
+    public TrajectorySequence rightPath(SignalSleeveWebcam.Side side) {
         drive.setPoseEstimate(RIGHT_START_POSE);
 
         TrajectorySequence leftParkSequence = drive.trajectorySequenceBuilder(RIGHT_START_POSE)
