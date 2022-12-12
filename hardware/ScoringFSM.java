@@ -11,12 +11,12 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 @Config
 public class ScoringFSM extends Mechanism {
 
-    public static long ARM_TO_SCORE_DELAY = 200; // milliseconds
+    public static long ARM_TO_SCORE_DELAY = 250; // milliseconds
     public static long ARM_TO_RESET_DELAY = 500; // milliseconds
 
     private Arm arm = new Arm(opMode);
     private Clamp clamp = new Clamp(opMode);
-//    private ConeSensor coneSensor = new ConeSensor(opMode);
+    private ConeSensor coneSensor = new ConeSensor(opMode);
 
     private Thread scoreReadyThread;
     private Thread scoreResetThread;
@@ -27,7 +27,7 @@ public class ScoringFSM extends Mechanism {
     public void init(HardwareMap hwMap) {
         arm.init(hwMap);
         clamp.init(hwMap);
-//        coneSensor.init(hwMap);
+        coneSensor.init(hwMap);
 
         scoreReadyThread = new Thread(scoreReady);
         scoreResetThread = new Thread(scoreReset);
@@ -52,13 +52,18 @@ public class ScoringFSM extends Mechanism {
 
     public Runnable scoreReset = () -> {
         try {
-//            clamp.open();
             Thread.sleep(ARM_TO_RESET_DELAY);
             scoreState = ScoreState.REST;
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
     };
+
+    public void runThread(Thread thread) {
+        try {
+            thread.start();
+        } catch (IllegalThreadStateException ignored) {}
+    }
 
     @Override
     public void loop(Gamepad gamepad) {
@@ -74,24 +79,18 @@ public class ScoringFSM extends Mechanism {
                 } else if (gamepad.right_bumper) {
                     clamp.close();
                 } else if (gamepad.dpad_up) {
-                    try {
-                        scoreReadyThread.start();
-                    } catch (IllegalThreadStateException ignored) {}
+                    runThread(scoreReadyThread);
                 }
-//                if (coneSensor.hasCone()) {
-//                    try {
-//                        scoreReadyThread.start();
-//                    } catch (IllegalThreadStateException ignored) {}
-//                }
+                else if (coneSensor.hasCone()) {
+                    runThread(scoreReadyThread);
+                }
                 break;
             case SCORE:
                 clamp.close();
                 arm.scorePos();
 
                 if (gamepad.x) {
-                    try {
-                        scoreResetThread.start();
-                    } catch (IllegalThreadStateException ignored) {}
+                    runThread(scoreResetThread);
                 }
                 break;
         }

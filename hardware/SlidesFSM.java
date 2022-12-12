@@ -11,11 +11,14 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 @Config
 public class SlidesFSM extends Mechanism {
 
+    public static long EXTEND_ON_SENSOR_DELAY = 150;
     public static long RETRACT_STATE_DELAY = 100;
     public static long RETRACT_DELAY = 250;
 
     private SlidesMotors slidesMotors = new SlidesMotors(opMode);
+    private ConeSensor coneSensor = new ConeSensor(opMode);
 
+    private Thread prepArmThread;
     private Thread lowThread;
     private Thread mediumThread;
     private Thread highThread;
@@ -26,7 +29,9 @@ public class SlidesFSM extends Mechanism {
     @Override
     public void init(HardwareMap hwMap) {
         slidesMotors.init(hwMap);
+        coneSensor.init(hwMap);
 
+        prepArmThread = new Thread(prepArm);
         lowThread = new Thread(low);
         mediumThread = new Thread(medium);
         highThread = new Thread(high);
@@ -39,6 +44,15 @@ public class SlidesFSM extends Mechanism {
         WAIT_RETRACT
     }
     public SlidesState slidesState = SlidesState.REST;
+
+    public Runnable prepArm = () -> {
+        try {
+            Thread.sleep(EXTEND_ON_SENSOR_DELAY);
+            slidesMotors.extendPrepArm();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    };
 
     public Runnable low = () -> {
         try {
@@ -80,6 +94,12 @@ public class SlidesFSM extends Mechanism {
         }
     };
 
+    public void runThread(Thread thread) {
+        try {
+            thread.start();
+        } catch (IllegalThreadStateException ignored) {}
+    }
+
     @Override
     public void loop(Gamepad gamepad) {
         slidesMotors.update();
@@ -89,20 +109,17 @@ public class SlidesFSM extends Mechanism {
                 slidesState = SlidesState.WAIT_EXTEND;
                 break;
             case WAIT_EXTEND:
-                if (gamepad.a) {
-                    try {
-                        lowThread.start();
-                    } catch (IllegalThreadStateException ignored) {}
+                if (coneSensor.hasCone()) {
+                    runThread(prepArmThread);
                 }
-                if (gamepad.b) {
-                    try {
-                        mediumThread.start();
-                    } catch (IllegalThreadStateException ignored) {}
+                else if (gamepad.a) {
+                    runThread(lowThread);
                 }
-                if (gamepad.y) {
-                    try {
-                        highThread.start();
-                    } catch (IllegalThreadStateException ignored) {}
+                else if (gamepad.b) {
+                    runThread(mediumThread);
+                }
+                else if (gamepad.y) {
+                    runThread(highThread);
                 }
                 break;
             case WAIT_RETRACT:
@@ -110,9 +127,7 @@ public class SlidesFSM extends Mechanism {
                     slidesMotors.descendABit();
                 }
                 else if (gamepad.x) {
-                    try {
-                        retractThread.start();
-                    } catch (IllegalThreadStateException ignored) {}
+                    runThread(retractThread);
                 }
                 break;
         }
