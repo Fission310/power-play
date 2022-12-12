@@ -22,8 +22,7 @@ public class Clamp extends Mechanism {
     @Override
     public void init(HardwareMap hwMap) {
         clamp = hwMap.get(Servo.class, "clamp");
-        clamp.setDirection(Servo.Direction.REVERSE);
-
+//        clamp.setDirection(Servo.Direction.REVERSE);
     }
 
     public void open() {
