@@ -16,7 +16,7 @@ public class DevConeSensor extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         sensor.init(hardwareMap);
 
-//        telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
+        telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
         waitForStart();
 

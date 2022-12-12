@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.hardware;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.ColorRangeSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -7,11 +8,12 @@ import com.stuyfission.fissionlib.util.Mechanism;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
+@Config
 public class ConeSensor extends Mechanism {
 
     private ColorRangeSensor coneSensor;
 
-    public static double THRESHOLD = 250;
+    public static double THRESHOLD = 150;
 
     public ConeSensor(LinearOpMode opMode) { this.opMode = opMode; }
 
