@@ -29,9 +29,10 @@ public class SlidesMotors extends Mechanism {
     public static double kD = 0;
     public static double kF = 0;
 
+    public static double POS_PREP_ARM = 10;
     public static double POS_LOW = 33;
-    public static double POS_MEDIUM = 52;
-    public static double POS_HIGH = 65;
+    public static double POS_MEDIUM = 55;
+    public static double POS_HIGH = 68;
 
     public SlidesMotors(LinearOpMode opMode) { this.opMode = opMode; }
 
@@ -59,6 +60,11 @@ public class SlidesMotors extends Mechanism {
     public void rest() {
         leftSlideMotor.setTargetPosition(0);
         rightSlideMotor.setTargetPosition(0);
+    }
+
+    public void extendPrepArm() {
+        leftSlideMotor.setTargetPosition(POS_PREP_ARM);
+        rightSlideMotor.setTargetPosition(POS_PREP_ARM);
     }
 
     public void extendLow() {
