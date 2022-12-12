@@ -41,7 +41,7 @@ public class ConeStackWebcam extends Mechanism {
         camera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
             @Override
             public void onOpened() {
-                camera.startStreaming(864, 480, OpenCvCameraRotation.UPRIGHT);
+                camera.startStreaming(864, 480, OpenCvCameraRotation.SIDEWAYS_RIGHT);
                 FtcDashboard.getInstance().startCameraStream(camera, 0);
             }
 
@@ -65,13 +65,13 @@ public class ConeStackWebcam extends Mechanism {
         Telemetry telemetry;
         Mat mat = new Mat();
 
-        static final int SCREEN_WIDTH = 864;
-        static final int SCREEN_HEIGHT = 480;
-
-        static final Rect ROI = new Rect(
-                new Point(0,0),
-                new Point(SCREEN_WIDTH, SCREEN_HEIGHT)
-        );
+//        static final int SCREEN_WIDTH = 864;
+//        static final int SCREEN_HEIGHT = 480;
+//
+//        static final Rect ROI = new Rect(
+//                new Point(0,0),
+//                new Point(SCREEN_WIDTH, SCREEN_HEIGHT)
+//        );
 
         public LineDetector(Telemetry t) {
             telemetry = new MultipleTelemetry(t, FtcDashboard.getInstance().getTelemetry());
@@ -80,34 +80,55 @@ public class ConeStackWebcam extends Mechanism {
         @Override
         public Mat processFrame(Mat input) {
             Imgproc.cvtColor(input, mat, Imgproc.COLOR_RGB2HSV);
+//
+            Scalar lowRedLow = new Scalar(0, 50, 50);
+            Scalar highRedLow = new Scalar(10, 255, 255);
+            Mat redMaskLow = new Mat();
+            Core.inRange(mat, lowRedLow, highRedLow, redMaskLow);
 
-            Scalar lowRed = new Scalar(160, 50, 50);
-            Scalar highRed = new Scalar(180, 255, 255);
+
+            Scalar lowRedHigh = new Scalar(160, 50, 50);
+            Scalar highRedHigh = new Scalar(180, 255, 255);
+            Mat redMaskHigh = new Mat();
+            Core.inRange(mat, lowRedHigh, highRedHigh, redMaskHigh);
+
             Mat redMask = new Mat();
-            Core.inRange(mat, lowRed, highRed, redMask);
-//            Scalar blue = new Scalar(0, 0, 255);
+            Core.bitwise_or(redMaskLow, redMaskHigh, redMask);
 
-//            List<MatOfPoint> redContours = new ArrayList<>();
-//            Mat redHierarchy = new Mat();
-//            Imgproc.findContours(redMask, redContours, redHierarchy, 1, Imgproc.CHAIN_APPROX_NONE);
-//            Imgproc.drawContours(input, redContours, -1, new Scalar(0, 255, 0), 2);
-//            Moments redMoments = Imgproc.moments(redContours.get(-1));
-//            double cx = 0;
-//            double cy = 0;
-//            if (redMoments.m00 != 0) {
-//                cx = redMoments.m10 / redMoments.m00;
-//                cy = redMoments.m01 / redMoments.m00;
-//            }
-//
-//            Imgproc.circle(input, new Point(cx, cy), 5, new Scalar(255,255,255), -1);
-//
-//            telemetry.addData("cx", cx);
-//            telemetry.addData("cy", cy);
+            List<MatOfPoint> redContours = new ArrayList<>();
+            Mat redHierarchy = new Mat();
+            Imgproc.findContours(redMask, redContours, redHierarchy, 1, Imgproc.CHAIN_APPROX_NONE);
+            Imgproc.drawContours(input, redContours, -1, new Scalar(0, 255, 0), 2);
 
-//            redMask.release();
-            input.release();
+            int maxIndex = 0;
+            double maxArea = 0;
+            for (int i = 0; i < redContours.size(); i++) {
+                double contourArea = Imgproc.contourArea(redContours.get(i));
+                if (contourArea > maxArea) {
+                    maxIndex = i;
+                    maxArea = contourArea;
+                }
+            }
+
+            Moments redMoments = Imgproc.moments(redContours.get(maxIndex));
+            double cx = 0;
+            double cy = 0;
+            if (redMoments.m00 != 0) {
+                cx = redMoments.m10 / redMoments.m00;
+                cy = redMoments.m01 / redMoments.m00;
+            }
+
+            Imgproc.circle(input, new Point(cx, cy), 5, new Scalar(255,255,255), -1);
+
+            telemetry.addData("cx", cx);
+            telemetry.addData("cy", cy);
+
+
+            redMaskLow.release();
+            redMaskHigh.release();
             mat.release();
-            return redMask;
+            redMask.release();
+            return input;
         }
     }
 }
