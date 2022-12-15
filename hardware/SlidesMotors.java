@@ -3,7 +3,6 @@ package org.firstinspires.ftc.teamcode.hardware;
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.stuyfission.fissionlib.motion.MotionProfiledDcMotor;
 import com.stuyfission.fissionlib.util.Mechanism;
@@ -27,6 +26,7 @@ public class SlidesMotors extends Mechanism {
     public static double kP = 0.1;
     public static double kI = 0;
     public static double kD = 0;
+    // TODO: Increase for faster slides
     public static double kF = 0;
 
     public static double POS_PREP_ARM = 10;
