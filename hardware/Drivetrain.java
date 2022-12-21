@@ -51,7 +51,7 @@ public class Drivetrain extends Mechanism {
                 Vector2d input = new Vector2d(
                         -gamepad.left_stick_y,
                         -gamepad.left_stick_x
-                ).rotated(rrDrive.getPoseEstimate().getHeading());
+                ).rotated(-1 * (rrDrive.getPoseEstimate().getHeading()));
 
                 rrDrive.setWeightedDrivePower(
                         new Pose2d(
