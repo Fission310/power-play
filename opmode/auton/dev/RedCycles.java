@@ -34,13 +34,16 @@ public class RedCycles extends LinearOpMode {
     private static final double RIGHT_CENTER_X = 35;
     private static final Pose2d RIGHT_START_POSE = new Pose2d(RIGHT_CENTER_X, WALL_POS, HEADING);
 
-    private static final double RIGHT_CONE_STACK_Y = -13;
-    private static final double RIGHT_CONE_STACK_X = 62;
+    private static final double RIGHT_CONE_STACK_Y = -17;
+    private static final double RIGHT_CONE_STACK_X = 60;
 
-    private static final double RIGHT_HIGH_GOAL_X = 25;
-    private static final double RIGHT_HIGH_GOAL_Y = 4;
+    private static final double RIGHT_HIGH_GOAL_X = 24;
+    private static final double RIGHT_HIGH_GOAL_Y = -8;
 
-    private static final Pose2d HIGH_GOAL_POSE = new Pose2d(RIGHT_HIGH_GOAL_X, RIGHT_HIGH_GOAL_Y, Math.toRadians(135));
+    private static double HIGH_GOAL_ANGLE = 140;
+    private static double CONE_STACK_ANGLE = 320;
+
+    private static final Pose2d HIGH_GOAL_POSE = new Pose2d(RIGHT_HIGH_GOAL_X, RIGHT_HIGH_GOAL_Y, Math.toRadians(140));
     private static final Vector2d HIGH_GOAL_VECTOR = new Vector2d(RIGHT_HIGH_GOAL_X, RIGHT_HIGH_GOAL_Y);
     private static final Vector2d CONE_STACK = new Vector2d(RIGHT_CONE_STACK_X, RIGHT_CONE_STACK_Y);
 
@@ -50,37 +53,13 @@ public class RedCycles extends LinearOpMode {
 
         drive.setPoseEstimate(RIGHT_START_POSE);
 
-//        TrajectorySequence sequence = drive.trajectorySequenceBuilder(RIGHT_START_POSE)
-//                // DRIVE TO HIGH GOAL WITH PRELOAD //
-//                .lineToLinearHeading(new Pose2d(RIGHT_CENTER_X, RIGHT_HIGH_GOAL_Y, HEADING))
-//                .lineToLinearHeading(new Pose2d(RIGHT_HIGH_GOAL_SCORE_X, RIGHT_HIGH_GOAL_Y, HEADING))
-//                // DRIVE TO HIGH GOAL WITH PRELOAD //
-//
-//                // SCORE //
-//                .waitSeconds(1)
-//                .lineToLinearHeading(new Pose2d(RIGHT_CENTER_X, RIGHT_HIGH_GOAL_Y, HEADING))
-//                // SCORE //
-//
-//                // GO TO CONE STACK //
-//                .lineToLinearHeading(new Pose2d(RIGHT_CENTER_X, RIGHT_CONE_STACK_Y, HEADING))
-//                .lineToLinearHeading(new Pose2d(RIGHT_CONE_STACK_X, RIGHT_CONE_STACK_Y, HEADING))
-//                // GO TO CONE STACK //
-//
-//                .waitSeconds(0.5)
-//
-//                // GO BACK TO HIGH GOAL //
-//                .lineToLinearHeading(new Pose2d(RIGHT_CENTER_X, RIGHT_CONE_STACK_Y, HEADING))
-//                .lineToLinearHeading(new Pose2d(RIGHT_CENTER_X, RIGHT_HIGH_GOAL_Y, HEADING))
-//                .lineToLinearHeading(new Pose2d(RIGHT_HIGH_GOAL_SCORE_X, RIGHT_HIGH_GOAL_Y, HEADING))
-//                // GO BACK TO HIGH GOAL //
-//
-//
-//                .build();
+//        TrajectorySequence cycle = drive.trajectorySequenceBuilder(drive.getPoseEstimate())
+
 
         TrajectorySequence splineCycle = drive.trajectorySequenceBuilder(RIGHT_START_POSE)
                 // drive to high goal
                 .setTangent(Math.toRadians(90))
-                .splineToLinearHeading(HIGH_GOAL_POSE, Math.toRadians(125))
+                .splineToLinearHeading(HIGH_GOAL_POSE, Math.toRadians(130))
                 // drive to high goal
 
                 // score
@@ -93,7 +72,7 @@ public class RedCycles extends LinearOpMode {
 
                 // go to cone stack
                 .setReversed(true)
-                .setTangent(Math.toRadians(315))
+                .setTangent(Math.toRadians(CONE_STACK_ANGLE))
                 .splineTo(CONE_STACK, Math.toRadians(0))
 
                 .waitSeconds(0.5)
@@ -101,7 +80,7 @@ public class RedCycles extends LinearOpMode {
                 // go to score
                 .setReversed(false)
                 .setTangent(Math.toRadians(180))
-                .splineTo(HIGH_GOAL_VECTOR, Math.toRadians(135))
+                .splineTo(HIGH_GOAL_VECTOR, Math.toRadians(HIGH_GOAL_ANGLE))
 
                 .waitSeconds(0.5)
 
@@ -113,7 +92,7 @@ public class RedCycles extends LinearOpMode {
 
                 // go to cone stack
                 .setReversed(true)
-                .setTangent(Math.toRadians(315))
+                .setTangent(Math.toRadians(CONE_STACK_ANGLE))
                 .splineTo(CONE_STACK, Math.toRadians(0))
 
                 .waitSeconds(0.5)
@@ -121,11 +100,72 @@ public class RedCycles extends LinearOpMode {
                 // go to score
                 .setReversed(false)
                 .setTangent(Math.toRadians(180))
-                .splineTo(HIGH_GOAL_VECTOR, Math.toRadians(135))
+                .splineTo(HIGH_GOAL_VECTOR, Math.toRadians(HIGH_GOAL_ANGLE))
 
                 .waitSeconds(0.5)
 
                 // end cycle
+
+                // ======================= //
+
+                // start cycle
+
+                // go to cone stack
+                .setReversed(true)
+                .setTangent(Math.toRadians(CONE_STACK_ANGLE))
+                .splineTo(CONE_STACK, Math.toRadians(0))
+
+                .waitSeconds(0.5)
+
+                // go to score
+                .setReversed(false)
+                .setTangent(Math.toRadians(180))
+                .splineTo(HIGH_GOAL_VECTOR, Math.toRadians(HIGH_GOAL_ANGLE))
+
+                .waitSeconds(0.5)
+
+                // end cycle
+
+                // ======================= //
+
+                // start cycle
+
+                // go to cone stack
+                .setReversed(true)
+                .setTangent(Math.toRadians(CONE_STACK_ANGLE))
+                .splineTo(CONE_STACK, Math.toRadians(0))
+
+                .waitSeconds(0.5)
+
+                // go to score
+                .setReversed(false)
+                .setTangent(Math.toRadians(180))
+                .splineTo(HIGH_GOAL_VECTOR, Math.toRadians(HIGH_GOAL_ANGLE))
+
+                .waitSeconds(0.5)
+
+                // end cycle
+
+                // ======================= //
+
+                // start cycle
+
+                // go to cone stack
+                .setReversed(true)
+                .setTangent(Math.toRadians(CONE_STACK_ANGLE))
+                .splineTo(CONE_STACK, Math.toRadians(0))
+
+                .waitSeconds(0.5)
+
+                // go to score
+                .setReversed(false)
+                .setTangent(Math.toRadians(180))
+                .splineTo(HIGH_GOAL_VECTOR, Math.toRadians(HIGH_GOAL_ANGLE))
+
+                .waitSeconds(0.5)
+
+                // end cycle
+
                 .build();
 
         waitForStart();
