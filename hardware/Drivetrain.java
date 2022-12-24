@@ -16,12 +16,6 @@ public class Drivetrain extends Mechanism {
 
     public Drivetrain(LinearOpMode opMode) { this.opMode = opMode; }
 
-    public enum DriveMode {
-        ROBOT_CENTRIC,
-        FIELD_CENTRIC
-    }
-    DriveMode driveMode = DriveMode.ROBOT_CENTRIC;
-
     @Override
     public void init(HardwareMap hwMap) {
         rrDrive = new SampleMecanumDrive(hwMap);
@@ -30,39 +24,13 @@ public class Drivetrain extends Mechanism {
 
     @Override
     public void loop(Gamepad gamepad) {
-
-        if (gamepad.left_stick_button) {
-            driveMode = DriveMode.ROBOT_CENTRIC;
-        } else if (gamepad.right_stick_button) {
-            driveMode = DriveMode.FIELD_CENTRIC;
-        }
-
-        switch (driveMode) {
-            case ROBOT_CENTRIC:
-                rrDrive.setWeightedDrivePower(
-                        new Pose2d(
-                                -gamepad.left_stick_y,
-                                -gamepad.left_stick_x,
-                                -gamepad.right_stick_x
-                        )
-                );
-                break;
-            case FIELD_CENTRIC:
-                Vector2d input = new Vector2d(
+        rrDrive.setWeightedDrivePower(
+                new Pose2d(
                         -gamepad.left_stick_y,
-                        -gamepad.left_stick_x
-                ).rotated(-1 * (rrDrive.getPoseEstimate().getHeading()));
-
-                rrDrive.setWeightedDrivePower(
-                        new Pose2d(
-                                input.getX(),
-                                input.getY(),
-                                -gamepad.right_stick_x
-                        )
-                );
-                break;
-        }
-
+                        -gamepad.left_stick_x,
+                        -gamepad.right_stick_x
+                )
+        );
         rrDrive.update();
     }
 
