@@ -27,16 +27,17 @@ public class SignalSleeveWebcam extends Mechanism {
     private WebcamName webcamName;
     private OpenCvCamera camera;
     private SideDetector detector;
+    private String deviceName;
 
-    public SignalSleeveWebcam(LinearOpMode opMode) {
+    public SignalSleeveWebcam(LinearOpMode opMode, String deviceName) {
         this.opMode = opMode;
+        this.deviceName = deviceName;
     }
 
-    @Override
     public void init(HardwareMap hwMap) {
         int cameraMonitorViewId = hwMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hwMap.appContext.getPackageName());
 
-        webcamName = hwMap.get(WebcamName.class, "SignalSleeveWebcam");
+        webcamName = hwMap.get(WebcamName.class, deviceName);
         camera = OpenCvCameraFactory.getInstance().createWebcam(webcamName, cameraMonitorViewId);
 
         camera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
@@ -56,7 +57,6 @@ public class SignalSleeveWebcam extends Mechanism {
 
         detector = new SideDetector(opMode.telemetry);
         camera.setPipeline(detector);
-
     }
 
     public enum Side {
