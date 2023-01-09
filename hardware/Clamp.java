@@ -12,17 +12,15 @@ import com.stuyfission.fissionlib.util.Mechanism;
 public class Clamp extends Mechanism {
 
     private Servo clamp;
-//    private CRServo crServo;
 
-    public static double OPEN_POS = 0;
-    public static double CLOSE_POS = 1;
+    public static double OPEN_POS = 0.62;
+    public static double CLOSE_POS = 0.52;
 
     public Clamp(LinearOpMode opMode) { this.opMode = opMode; }
 
     @Override
     public void init(HardwareMap hwMap) {
         clamp = hwMap.get(Servo.class, "clamp");
-//        clamp.setDirection(Servo.Direction.REVERSE);
     }
 
     public void open() {
@@ -31,7 +29,6 @@ public class Clamp extends Mechanism {
 
     public void close() {
         clamp.setPosition(CLOSE_POS);
-//        crServo.setPower(0);
     }
 
     @Override
