@@ -8,6 +8,7 @@ import com.stuyfission.fissionlib.motion.MotionProfiledDcMotor;
 import com.stuyfission.fissionlib.util.Mechanism;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 
 @Config
 public class SlidesMotors extends Mechanism {
@@ -30,6 +31,7 @@ public class SlidesMotors extends Mechanism {
     public static double kF = 0;
 
     public static double POS_PREP_ARM = 10;
+    public static double POS_CONE_STACK = 20;
     public static double POS_LOW = 33;
     public static double POS_MEDIUM = 55;
     public static double POS_HIGH = 68;
@@ -67,6 +69,11 @@ public class SlidesMotors extends Mechanism {
         rightSlideMotor.setTargetPosition(POS_PREP_ARM);
     }
 
+    public void extendConeStack() {
+        leftSlideMotor.setTargetPosition(POS_CONE_STACK);
+        rightSlideMotor.setTargetPosition(POS_CONE_STACK);
+    }
+
     public void extendLow() {
         leftSlideMotor.setTargetPosition(POS_LOW);
         rightSlideMotor.setTargetPosition(POS_LOW);
@@ -99,5 +106,8 @@ public class SlidesMotors extends Mechanism {
 
         telemetry.addData("velocityLeft", leftSlideMotor.getVelocity());
         telemetry.addData("velocityRight", rightSlideMotor.getVelocity());
+
+        telemetry.addData("currentLeft", leftSlideMotor.getCurrent(CurrentUnit.AMPS));
+        telemetry.addData("currentRight", rightSlideMotor.getCurrent(CurrentUnit.AMPS));
     }
 }
