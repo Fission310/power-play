@@ -5,6 +5,13 @@ import com.acmerobotics.roadrunner.geometry.Vector2d;
 
 public class AutoConstants {
 
+    /** ==== CONSTANTS FOR CONE AUTOS ==== **/
+
+    public static final double DELAY_SCORE = 0.5;
+    public static final double DELAY_PICKUP = 0.5;
+
+    /** ==== END CONSTANTS FOR CONE AUTOS ==== **/
+
     /** DEFINITIONS OF PREFIXES
      *
      * RR - Red Right
@@ -154,4 +161,12 @@ public class AutoConstants {
     public static final Vector2d BL_CONE_STACK_VECTOR = new Vector2d(BL_CONE_STACK_X, BL_CONE_STACK_Y);
 
     /** ======= END CONSTANTS FOR BLUE LEFT ======= **/
+
+
+    /** ====== CONSTANTS FOR PARK AUTOS ====== **/
+
+    public static final double FORWARD_DIST = 25;
+    public static final double LATERAL_DIST = 23;
+
+    /** ====== END CONSTANTS FOR PARK AUTOS ====== **/
 }
