@@ -7,8 +7,11 @@ public class AutoConstants {
 
     /** ==== CONSTANTS FOR CONE AUTOS ==== **/
 
-    public static final double DELAY_SCORE = 0.5;
-    public static final double DELAY_PICKUP = 0.5;
+    public static final double DELAY_PRELOAD_PICKUP = 4.5;
+    public static final double DELAY_PICKUP = 3;
+
+    public static final double[] SLIDE_EXTEND_POSITIONS = {8.2, 8.2, 1, 0, 0, 0, 0};
+    public static final double[] ARM_CONE_STACK_POSITIONS = {0.57, 0.57, 0.63, 0.7, 0.77};
 
     /** ==== END CONSTANTS FOR CONE AUTOS ==== **/
 
@@ -31,16 +34,16 @@ public class AutoConstants {
     public static final double RR_CENTER_X = 35;
     public static final Pose2d RR_START_POSE = new Pose2d(RR_CENTER_X, RR_WALL_POS, RR_HEADING);
 
-    public static final double RR_CONE_STACK_X = 60;
-    public static final double RR_CONE_STACK_Y = -18;
-    public static final double RR_PRELOAD_CONE_STACK_Y = -16;
+    public static final double RR_CONE_STACK_X = 59.5;
+    public static final double RR_CONE_STACK_Y = -17;
+    public static final double RR_PRELOAD_CONE_STACK_Y = -16.5;
 
-    public static final double RR_HIGH_GOAL_X = 22.75;
-    public static final double RR_HIGH_GOAL_Y = -6;
+    public static final double RR_HIGH_GOAL_X = 24;
+    public static final double RR_HIGH_GOAL_Y = -6.5;
 
-    public static final double RR_PRELOAD_X_OFFSET = 0.5;
+    public static final double RR_PRELOAD_X_OFFSET = 1.5;
 
-    public static final double RR_HIGH_GOAL_ANGLE = 140;
+    public static final double RR_HIGH_GOAL_ANGLE = 132;
     public static final double RR_HIGH_GOAL_TANGENT = 180;
 
     public static final double RR_CONE_STACK_ANGLE = 320;
