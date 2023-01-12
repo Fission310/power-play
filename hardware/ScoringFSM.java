@@ -12,7 +12,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 public class ScoringFSM extends Mechanism {
 
     public static long ARM_TO_SCORE_DELAY = 250; // milliseconds
-    public static long ARM_TO_RESET_DELAY = 500; // milliseconds
+    public static long ARM_TO_RESET_DELAY = 200; // milliseconds
 
     private Arm arm = new Arm(opMode);
     private Clamp clamp = new Clamp(opMode);
@@ -36,7 +36,8 @@ public class ScoringFSM extends Mechanism {
     public enum ScoreState {
         REST,
         WAIT_INTAKE,
-        SCORE
+        SCORE,
+        SCORING
     }
     public static ScoreState scoreState = ScoreState.REST;
 
@@ -90,8 +91,13 @@ public class ScoringFSM extends Mechanism {
                 arm.scorePos();
 
                 if (gamepad.x) {
+                    clamp.open();
                     runThread(scoreResetThread);
+                    scoreState = ScoreState.SCORING;
                 }
+                break;
+            case SCORING:
+                clamp.open();
                 break;
         }
     }
