@@ -23,15 +23,19 @@ public class FiveConeAuto extends LinearOpMode {
     private SlidesMotors slides;
     private SignalSleeveWebcam signalSleeveWebcam = new SignalSleeveWebcam(this, "SignalSleeveWebcam");
 
-    private SignalSleeveWebcam.Side parkSide;
+    private SignalSleeveWebcam.Side parkSide = SignalSleeveWebcam.Side.ONE;
 
     private Thread scoreReadyThread;
     private Thread scoreThread;
 
-    private Thread pickupReadyThread;
-    private Thread pickupThread;
-
     ElapsedTime time = new ElapsedTime();
+
+    private TrajectorySequence preloadToConeStack;
+    private TrajectorySequence coneStackToHighGoal;
+    private TrajectorySequence highGoalToConeStack;
+
+    private boolean canContinue = false;
+    private boolean canSlidesExtend = false;
 
     public Runnable scoreReady = () -> {
         try {
@@ -39,7 +43,7 @@ public class FiveConeAuto extends LinearOpMode {
             // rotate arm to intake pos
             slides.extendHigh();
             Thread.sleep(100);
-            arm.intakePos();
+            arm.autoScorePos();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -47,36 +51,9 @@ public class FiveConeAuto extends LinearOpMode {
 
     public Runnable score = () -> {
         try {
-            clamp.open();
-            Thread.sleep(100);
-            arm.scorePos();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-    };
-
-    public Runnable pickupReady = () -> {
-        try {
-            // open clamp
-            // rotate arm to score pos (back intake)
-            // retract slides to cone stack pos
-            clamp.open();
-            Thread.sleep(100);
-            arm.scorePos();
-            Thread.sleep(500);
-            slides.extendConeStack();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-    };
-
-    public Runnable pickup = () -> {
-        try {
-            clamp.close();
-            Thread.sleep(100);
-            slides.extendHigh();
-            Thread.sleep(100);
-            arm.intakePos();
+            Thread.sleep(200);
+            arm.moveToPos(AutoConstants.ARM_CONE_STACK_POSITIONS[conesScored]); // autoIntakePos
+            canContinue = true;
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -99,7 +76,7 @@ public class FiveConeAuto extends LinearOpMode {
     TrajectoryState trajectoryState = TrajectoryState.PRELOAD;
 
     /** VERY IMPORTANT **/
-    private static final int CONE_COUNT = 5;
+    private static final int CONE_COUNT = 4;
     private static int conesScored = 0;
 
     @Override
@@ -110,8 +87,6 @@ public class FiveConeAuto extends LinearOpMode {
         slides = new SlidesMotors(this);
         signalSleeveWebcam.init(hardwareMap);
 
-        parkSide = signalSleeveWebcam.side();
-
         clamp.init(hardwareMap);
         arm.init(hardwareMap);
         slides.init(hardwareMap);
@@ -119,18 +94,16 @@ public class FiveConeAuto extends LinearOpMode {
         scoreReadyThread = new Thread(scoreReady);
         scoreThread = new Thread(score);
 
-        pickupReadyThread = new Thread(pickupReady);
-        pickupThread = new Thread(pickup);
-
         drive.setPoseEstimate(AutoConstants.RL_START_POSE);
 
         TrajectorySequence preload = drive.trajectorySequenceBuilder(AutoConstants.RL_START_POSE)
                 .setTangent(Math.toRadians(90))
                 .lineToLinearHeading(new Pose2d(AutoConstants.RL_CENTER_X, AutoConstants.RL_HIGH_GOAL_Y, AutoConstants.RL_HEADING))
                 .lineToLinearHeading(new Pose2d(AutoConstants.RL_HIGH_GOAL_X + AutoConstants.RL_PRELOAD_X_OFFSET, AutoConstants.RL_HIGH_GOAL_Y, AutoConstants.RL_HEADING))
+                .waitSeconds(0.2)
                 .build();
 
-        TrajectorySequence preloadToConeStack = drive.trajectorySequenceBuilder(preload.end())
+        preloadToConeStack = drive.trajectorySequenceBuilder(preload.end())
                 .lineToLinearHeading(new Pose2d(AutoConstants.RL_CENTER_X, AutoConstants.RL_HIGH_GOAL_Y, AutoConstants.RL_HEADING))
                 .lineToLinearHeading(new Pose2d(AutoConstants.RL_CENTER_X, AutoConstants.RL_PRELOAD_CONE_STACK_Y, AutoConstants.RL_HEADING))
                 .setReversed(true)
@@ -138,14 +111,14 @@ public class FiveConeAuto extends LinearOpMode {
                 .splineToConstantHeading(AutoConstants.RL_CONE_STACK_VECTOR, Math.toRadians(AutoConstants.RL_CONE_STACK_END_ANGLE))
                 .build();
 
-        TrajectorySequence coneStackToHighGoal = drive.trajectorySequenceBuilder(preloadToConeStack.end())
+        coneStackToHighGoal = drive.trajectorySequenceBuilder(preloadToConeStack.end())
                 .setReversed(false)
                 .setTangent(Math.toRadians(AutoConstants.RL_HIGH_GOAL_TANGENT))
                 .splineTo(AutoConstants.RL_HIGH_GOAL_VECTOR, Math.toRadians(AutoConstants.RL_HIGH_GOAL_ANGLE))
-//                .waitSeconds(4)
+                .waitSeconds(0.2)
                 .build();
 
-        TrajectorySequence highGoalToConeStack = drive.trajectorySequenceBuilder(coneStackToHighGoal.end())
+        highGoalToConeStack = drive.trajectorySequenceBuilder(coneStackToHighGoal.end())
                 .setReversed(true)
                 .setTangent(Math.toRadians(AutoConstants.RL_CONE_STACK_ANGLE))
                 .splineTo(AutoConstants.RL_CONE_STACK_VECTOR, Math.toRadians(AutoConstants.RL_CONE_STACK_END_ANGLE))
@@ -164,66 +137,96 @@ public class FiveConeAuto extends LinearOpMode {
 
         waitForStart();
 
+        parkSide = signalSleeveWebcam.side();
+
         signalSleeveWebcam.stopStreaming();
 
         // drive to preload
         drive.followTrajectorySequenceAsync(preload);
+        runThread(scoreReadyThread);
 
         while (opModeIsActive() && !isStopRequested()) {
             telemetry.addData("cones scored", conesScored);
             telemetry.addData("current state", trajectoryState);
+            telemetry.addData("canContinue", canContinue);
+            telemetry.addData("canSlidesExtend", canSlidesExtend);
+            telemetry.addData("time", time);
             telemetry.update();
             drive.update();
             slides.update();
 
+            /**  TODO:
+             *
+             *   get rid of canContinue, use timers
+             *
+             */
+
             switch (trajectoryState) {
                 case PRELOAD:
-                    runThread(scoreReadyThread);
-                    time.reset();
                     if (!drive.isBusy()) {
+                        clamp.open();
                         runThread(scoreThread);
-                        if (time.seconds() >= AutoConstants.DELAY_SCORE) {
-                            trajectoryState = TrajectoryState.PRELOAD_TO_CS;
-                            drive.followTrajectorySequenceAsync(preloadToConeStack);
+                        if (canContinue) {
                             conesScored += 1;
+                            slides.extendToPosition(AutoConstants.SLIDE_EXTEND_POSITIONS[conesScored]); // (8.2)
+                            canContinue = false;
+                            drive.followTrajectorySequenceAsync(preloadToConeStack);
+                            trajectoryState = TrajectoryState.PRELOAD_TO_CS;
+                            time.reset();
+                            canSlidesExtend = true;
                         }
                     }
                     break;
                 case PRELOAD_TO_CS:
-                    runThread(pickupReadyThread);
-                    time.reset();
                     if (!drive.isBusy()) {
-                        runThread(pickupThread);
-                        if (time.seconds() >= AutoConstants.DELAY_PICKUP) {
-                            trajectoryState = TrajectoryState.CS_TO_HG;
+                        clamp.close();
+                        if (canSlidesExtend) {
+                            slides.extendHigh();
+                            canSlidesExtend = false;
+                        }
+                        if (time.seconds() >= AutoConstants.DELAY_PRELOAD_PICKUP) {
+                            arm.autoScorePos();
+                            canContinue = false;
                             drive.followTrajectorySequenceAsync(coneStackToHighGoal);
+                            trajectoryState = TrajectoryState.CS_TO_HG;
+                            canSlidesExtend = true;
                         }
                     }
                     break;
                 case CS_TO_HG:
-                    runThread(scoreReadyThread);
                     if (!drive.isBusy()) {
+                        clamp.open();
                         runThread(scoreThread);
-                        if (time.seconds() >= AutoConstants.DELAY_SCORE) {
-                            trajectoryState = TrajectoryState.HG_TO_CS;
-                            drive.followTrajectorySequenceAsync(highGoalToConeStack);
+                        if (canContinue) {
                             conesScored += 1;
+                            slides.extendToPosition(AutoConstants.SLIDE_EXTEND_POSITIONS[conesScored]);
+                            canContinue = false;
+                            drive.followTrajectorySequenceAsync(highGoalToConeStack);
+                            trajectoryState = TrajectoryState.HG_TO_CS;
+                            canSlidesExtend = true;
+                            time.reset();
                         }
                     }
                     break;
                 case HG_TO_CS:
-                    if (conesScored == CONE_COUNT) {
+                    if (conesScored >= CONE_COUNT) {
                         slides.rest();
                         arm.intakePos();
                         clamp.open();
                         trajectoryState = TrajectoryState.PARK;
                     } else {
-                        runThread(pickupReadyThread);
                         if (!drive.isBusy()) {
-                            runThread(pickupThread);
+                            clamp.close();
+                            if (canSlidesExtend) {
+                                slides.extendHigh();
+                                canSlidesExtend = false;
+                            }
                             if (time.seconds() >= AutoConstants.DELAY_PICKUP) {
-                                trajectoryState = TrajectoryState.CS_TO_HG;
+                                arm.autoScorePos();
+                                canContinue = false;
                                 drive.followTrajectorySequenceAsync(coneStackToHighGoal);
+                                trajectoryState = TrajectoryState.CS_TO_HG;
+                                canSlidesExtend = true;
                             }
                         }
                     }
@@ -256,6 +259,8 @@ public class FiveConeAuto extends LinearOpMode {
                     }
                     break;
                 case IDLE:
+                    arm.intakePos();
+                    clamp.open();
                     break;
             }
         }
