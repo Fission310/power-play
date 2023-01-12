@@ -20,9 +20,9 @@ public class SlidesMotors extends Mechanism {
     private static final double GEAR_RATIO = 1.0;
     private static final double TICKS_PER_REV = 145.1;
 
-    public static double MAX_VEL = 50;
-    public static double MAX_ACCEL = 50;
-    public static double RETRACTION_MULTIPLIER = 0.7;
+    public static double MAX_VEL = 60;
+    public static double MAX_ACCEL = 60;
+    public static double RETRACTION_MULTIPLIER = 1;
 
     public static double kP = 0.1;
     public static double kI = 0;
@@ -31,9 +31,8 @@ public class SlidesMotors extends Mechanism {
     public static double kF = 0;
 
     public static double POS_PREP_ARM = 10;
-    public static double POS_CONE_STACK = 20;
     public static double POS_LOW = 33;
-    public static double POS_MEDIUM = 55;
+    public static double POS_MEDIUM = 50;
     public static double POS_HIGH = 68;
 
     public SlidesMotors(LinearOpMode opMode) { this.opMode = opMode; }
@@ -69,11 +68,6 @@ public class SlidesMotors extends Mechanism {
         rightSlideMotor.setTargetPosition(POS_PREP_ARM);
     }
 
-    public void extendConeStack() {
-        leftSlideMotor.setTargetPosition(POS_CONE_STACK);
-        rightSlideMotor.setTargetPosition(POS_CONE_STACK);
-    }
-
     public void extendLow() {
         leftSlideMotor.setTargetPosition(POS_LOW);
         rightSlideMotor.setTargetPosition(POS_LOW);
@@ -89,14 +83,33 @@ public class SlidesMotors extends Mechanism {
         rightSlideMotor.setTargetPosition(POS_HIGH);
     }
 
+    public void extendToPosition(double pos) {
+        leftSlideMotor.setTargetPosition(pos);
+        rightSlideMotor.setTargetPosition(pos);
+    }
+
+    public void ascendABit() {
+        leftSlideMotor.setTargetPosition(leftSlideMotor.getPosition() + 3);
+        rightSlideMotor.setTargetPosition(rightSlideMotor.getPosition() + 3);
+    }
+
     public void descendABit() {
         leftSlideMotor.setTargetPosition(leftSlideMotor.getPosition() - 3);
         rightSlideMotor.setTargetPosition(rightSlideMotor.getPosition() - 3);
     }
 
+    public void setPower(double power) {
+        leftSlideMotor.setPower(power);
+        rightSlideMotor.setPower(power);
+    }
+
     public void update() {
         leftSlideMotor.update();
         rightSlideMotor.update();
+    }
+
+    public double getPosition() {
+        return (leftSlideMotor.getPosition() + rightSlideMotor.getPosition()) / 2.0;
     }
 
     @Override
