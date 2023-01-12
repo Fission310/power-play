@@ -14,7 +14,8 @@ public class Arm extends Mechanism {
     private Servo rightArm;
 
     public static double INTAKE_POS = 0.07;
-    public static double SCORE_POS = 0.72;
+    public static double AUTO_SCORE_POS = 0.21;
+    public static double SCORE_POS = 0.57;
 
     public Arm(LinearOpMode opMode) { this.opMode = opMode; }
 
@@ -31,9 +32,19 @@ public class Arm extends Mechanism {
         rightArm.setPosition(INTAKE_POS);
     }
 
+    public void autoScorePos() {
+        leftArm.setPosition(AUTO_SCORE_POS);
+        rightArm.setPosition(AUTO_SCORE_POS);
+    }
+
     public void scorePos() {
         leftArm.setPosition(SCORE_POS);
         rightArm.setPosition(SCORE_POS);
+    }
+
+    public void moveToPos(double pos) {
+        leftArm.setPosition(pos);
+        rightArm.setPosition(pos);
     }
 
     @Override
@@ -42,6 +53,8 @@ public class Arm extends Mechanism {
             scorePos();
         } else if (gamepad.dpad_down) {
             intakePos();
+        } else if (gamepad.dpad_right) {
+            autoScorePos();
         }
     }
 
