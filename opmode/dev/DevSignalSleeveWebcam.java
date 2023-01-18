@@ -10,7 +10,7 @@ import org.firstinspires.ftc.teamcode.hardware.SignalSleeveWebcam;
 @TeleOp (name = "Dev Signal Sleeve Webcam", group = "dev")
 public class DevSignalSleeveWebcam extends LinearOpMode {
 
-    private SignalSleeveWebcam signalSleeveWebcam = new SignalSleeveWebcam(this, "SignalSleeveWebcam");
+    private SignalSleeveWebcam signalSleeveWebcam = new SignalSleeveWebcam(this, "rightWebcam");
 
     @Override
     public void runOpMode() throws InterruptedException {
