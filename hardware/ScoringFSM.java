@@ -10,7 +10,7 @@ import com.stuyfission.fissionlib.util.Mechanism;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 @Config
-public class SlidesFSM extends Mechanism {
+public class ScoringFSM extends Mechanism {
 
     public static double DELAY_PREPARING = 0.2;
     public static double DELAY_LOW = 0.2;
@@ -19,14 +19,19 @@ public class SlidesFSM extends Mechanism {
     public static double DELAY_RETRACTING = 0.3;
 
     private SlidesMotors slidesMotors = new SlidesMotors(opMode);
+    private Arm arm = new Arm(opMode);
+    private Clamp clamp = new Clamp(opMode);
 
     ElapsedTime time;
 
-    public SlidesFSM(LinearOpMode opMode) { this.opMode = opMode; }
+    public ScoringFSM(LinearOpMode opMode) { this.opMode = opMode; }
 
     @Override
     public void init(HardwareMap hwMap) {
         slidesMotors.init(hwMap);
+        arm.init(hwMap);
+        clamp.init(hwMap);
+
         time = new ElapsedTime();
     }
 
@@ -59,10 +64,14 @@ public class SlidesFSM extends Mechanism {
         switch (slidesState) {
             case REST:
                 slidesMotors.rest();
+                arm.intakePos();
+                clamp.open();
+
                 slidesState = SlidesState.PREPARING;
                 break;
             case PREPARING:
                 if (gamepad.right_bumper) {
+                    clamp.close();
                     slidesMotors.extendPrepArm();
                     slidesState = SlidesState.WAIT_TO_EXTEND;
                     time.reset();
@@ -70,6 +79,9 @@ public class SlidesFSM extends Mechanism {
                 break;
             case WAIT_TO_EXTEND:
                 if (time.seconds() > DELAY_PREPARING) {
+
+                    arm.scorePos();
+
                     if (gamepad.a) {
                         slidesMotors.extendLow();
                         slidesLevel = SlidesLevel.LOW;
@@ -115,12 +127,14 @@ public class SlidesFSM extends Mechanism {
                     slidesMotors.ascendABit();
                 }
                 else if (gamepad.x || gamepad.left_bumper) {
+                    clamp.open();
                     slidesState = SlidesState.RETRACTING;
                     time.reset();
                 }
                 break;
             case RETRACTING:
                 if (time.seconds() > DELAY_RETRACTING) {
+                    arm.intakePos();
                     slidesMotors.rest();
                     slidesState = SlidesState.REST;
                 }
