@@ -30,10 +30,10 @@ public class SlidesMotors extends Mechanism {
     // TODO: Increase for faster slides
     public static double kF = 0;
 
-    public static double POS_PREP_ARM = 10;
+    public static double POS_PREP_ARM = 15;
     public static double POS_LOW = 33;
     public static double POS_MEDIUM = 50;
-    public static double POS_HIGH = 68;
+    public static double POS_HIGH = 72;
 
     public SlidesMotors(LinearOpMode opMode) { this.opMode = opMode; }
 
