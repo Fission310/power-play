@@ -26,13 +26,15 @@ public class FixSlides extends LinearOpMode {
             drivetrain.loop(gamepad1);
 
             if (gamepad1.right_trigger > 0) {
-                slidesMotors.setPower(0.7);
+                slidesMotors.setPower(0.5);
             } else if (gamepad1.left_trigger > 0) {
-                slidesMotors.setPower(-0.7);
+                slidesMotors.setPower(-0.5);
             } else if (gamepad1.dpad_up) {
                 arm.scorePos();
             } else if (gamepad1.dpad_down) {
                 arm.intakePos();
+            } else {
+                slidesMotors.setPower(0);
             }
         }
     }
