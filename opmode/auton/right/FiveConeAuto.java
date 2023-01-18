@@ -1,9 +1,8 @@
-package org.firstinspires.ftc.teamcode.opmode.auton.red.right;
+package org.firstinspires.ftc.teamcode.opmode.auton.right;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
@@ -15,7 +14,7 @@ import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 
 import org.firstinspires.ftc.teamcode.opmode.auton.AutoConstants;
 
-@Autonomous (name = "RED RIGHT 5 Cone Auto", group = "_ared")
+@Autonomous (name = "RIGHT_SIDE 5 Cone Auto", group = "_ared")
 public class FiveConeAuto extends LinearOpMode {
 
     private SampleMecanumDrive drive;
