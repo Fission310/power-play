@@ -10,8 +10,8 @@ public class AutoConstants {
     public static final double DELAY_PRELOAD_PICKUP = 4.5;
     public static final double DELAY_PICKUP = 3;
 
-    public static final double[] SLIDE_EXTEND_POSITIONS = {8.2, 8.2, 1, 0, 0, 0, 0};
-    public static final double[] ARM_CONE_STACK_POSITIONS = {0.57, 0.57, 0.63, 0.7, 0.77};
+    public static final double[] SLIDE_EXTEND_POSITIONS = {8.2, 7.6, 1, 0, 0, 0, 0};
+    public static final double[] ARM_CONE_STACK_POSITIONS = {0.57, 0.63, 0.63, 0.7, 0.77};
 
     /** ==== END CONSTANTS FOR CONE AUTOS ==== **/
 
@@ -34,29 +34,32 @@ public class AutoConstants {
     public static final double RR_CENTER_X = 35;
     public static final Pose2d RR_START_POSE = new Pose2d(RR_CENTER_X, RR_WALL_POS, RR_HEADING);
 
-    public static final double RR_CONE_STACK_X = 59.5;
-    public static final double RR_CONE_STACK_Y = -17;
-    public static final double RR_PRELOAD_CONE_STACK_Y = -16.5;
+    public static final double RR_CONE_STACK_X = 60;
+    public static final double RR_CONE_STACK_Y = -15.5; // 18
 
-    public static final double RR_HIGH_GOAL_X = 24;
-    public static final double RR_HIGH_GOAL_Y = -6.5;
+    public static final double RR_PRELOAD_CONE_STACK_Y = -17; // 16.5
 
-    public static final double RR_PRELOAD_X_OFFSET = 1.5;
+    public static final double RR_HIGH_GOAL_X = 25;
+    public static final double RR_HIGH_GOAL_Y = -5;
+    public static final double RR_HIGH_GOAL_Y_PRELOAD_OFFSET = 6 + RR_HIGH_GOAL_Y;
 
-    public static final double RR_HIGH_GOAL_ANGLE = 132;
+    public static final double RR_PRELOAD_X_OFFSET = 1;
+
+    public static final double RR_HIGH_GOAL_ANGLE = 135;
     public static final double RR_HIGH_GOAL_TANGENT = 180;
 
-    public static final double RR_CONE_STACK_ANGLE = 320;
+    public static final double RR_CONE_STACK_ANGLE = 315;
     public static final double RR_CONE_STACK_END_ANGLE = 0;
-    public static final double RR_CONE_STACK_ANGLE_OFFSET = 20;
+    public static final double RR_CONE_STACK_ANGLE_OFFSET = 25;
 
-    public static final double RR_PARK_LEFT_X = 10;
+    public static final double RR_PARK_LEFT_X = 12;
 
     public static final Pose2d RR_PARK_LEFT = new Pose2d(RR_PARK_LEFT_X, RR_CONE_STACK_Y, RR_HEADING);
     public static final Pose2d RR_PARK_MIDDLE = new Pose2d(RR_CENTER_X, RR_CONE_STACK_Y, RR_HEADING);
 
     public static final Vector2d RR_HIGH_GOAL_VECTOR = new Vector2d(RR_HIGH_GOAL_X, RR_HIGH_GOAL_Y);
     public static final Vector2d RR_CONE_STACK_VECTOR = new Vector2d(RR_CONE_STACK_X, RR_CONE_STACK_Y);
+    public static final Vector2d RR_PRELOAD_CONE_STACK_VECTOR = new Vector2d(RR_CONE_STACK_X, RR_PRELOAD_CONE_STACK_Y);
 
     /** ======= END CONSTANTS FOR RED RIGHT ======= **/
 
@@ -75,6 +78,7 @@ public class AutoConstants {
 
     public static final double RL_HIGH_GOAL_X = -RR_HIGH_GOAL_X;
     public static final double RL_HIGH_GOAL_Y = RR_HIGH_GOAL_Y;
+    public static final double RL_HIGH_GOAL_Y_PRELOAD_OFFSET = 6 + RL_HIGH_GOAL_Y;
 
     public static final double RL_PRELOAD_X_OFFSET = -RR_PRELOAD_X_OFFSET;
 
@@ -92,6 +96,7 @@ public class AutoConstants {
 
     public static final Vector2d RL_HIGH_GOAL_VECTOR = new Vector2d(RL_HIGH_GOAL_X, RL_HIGH_GOAL_Y);
     public static final Vector2d RL_CONE_STACK_VECTOR = new Vector2d(RL_CONE_STACK_X, RL_CONE_STACK_Y);
+    public static final Vector2d RL_PRELOAD_CONE_STACK_VECTOR = new Vector2d(RL_CONE_STACK_X, RL_PRELOAD_CONE_STACK_Y);
 
     /** ======= END CONSTANTS FOR RED LEFT ======= **/
 
@@ -110,6 +115,7 @@ public class AutoConstants {
 
     public static final double BR_HIGH_GOAL_X = RL_HIGH_GOAL_X;
     public static final double BR_HIGH_GOAL_Y = -RL_HIGH_GOAL_Y;
+    public static final double BR_HIGH_GOAL_Y_PRELOAD_OFFSET = 6 - BR_HIGH_GOAL_Y;
 
     public static final double BR_PRELOAD_X_OFFSET = RL_PRELOAD_X_OFFSET;
 
@@ -127,6 +133,7 @@ public class AutoConstants {
 
     public static final Vector2d BR_HIGH_GOAL_VECTOR = new Vector2d(BR_HIGH_GOAL_X, BR_HIGH_GOAL_Y);
     public static final Vector2d BR_CONE_STACK_VECTOR = new Vector2d(BR_CONE_STACK_X, BR_CONE_STACK_Y);
+    public static final Vector2d BR_PRELOAD_CONE_STACK_VECTOR = new Vector2d(BR_CONE_STACK_X, BR_PRELOAD_CONE_STACK_Y);
 
     /** ======= END CONSTANTS FOR BLUE RIGHT ======= **/
 
