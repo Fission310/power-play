@@ -29,6 +29,9 @@ public class SignalSleeveWebcam extends Mechanism {
     private SideDetector detector;
     private String deviceName;
 
+    private static final int WIDTH = 864;
+    private static final int HEIGHT = 480;
+
     public SignalSleeveWebcam(LinearOpMode opMode, String deviceName) {
         this.opMode = opMode;
         this.deviceName = deviceName;
@@ -43,7 +46,7 @@ public class SignalSleeveWebcam extends Mechanism {
         camera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
             @Override
             public void onOpened() {
-                camera.startStreaming(864, 480, OpenCvCameraRotation.SIDEWAYS_RIGHT);
+                camera.startStreaming(WIDTH, HEIGHT, OpenCvCameraRotation.SIDEWAYS_RIGHT); // 864, 480
                 FtcDashboard.getInstance().startCameraStream(camera, 0);
             }
 
@@ -55,7 +58,7 @@ public class SignalSleeveWebcam extends Mechanism {
 
         camera.showFpsMeterOnViewport(true);
 
-        detector = new SideDetector(opMode.telemetry);
+        detector = new SideDetector(opMode.telemetry, deviceName);
         camera.setPipeline(detector);
     }
 
@@ -75,13 +78,14 @@ public class SignalSleeveWebcam extends Mechanism {
     }
 
     private static class SideDetector extends OpenCvPipeline {
+
         Telemetry telemetry;
         Mat mat = new Mat();
 
         private Side side;
 
-        static final int SCREEN_WIDTH = 480;
-        static final int SCREEN_HEIGHT = 864;
+        static final int SCREEN_WIDTH = HEIGHT;
+        static final int SCREEN_HEIGHT = WIDTH;
 
         static final int FIRST_THIRD_WIDTH = SCREEN_WIDTH/3 + 10;
         static final int SECOND_THIRD_WIDTH = FIRST_THIRD_WIDTH * 2 - 10;
@@ -89,13 +93,21 @@ public class SignalSleeveWebcam extends Mechanism {
         static final int FIRST_THIRD_HEIGHT = SCREEN_HEIGHT/3;
         static final int SECOND_THIRD_HEIGHT = FIRST_THIRD_HEIGHT*2;
 
-        static final Rect ROI = new Rect(
-                new Point(FIRST_THIRD_WIDTH, FIRST_THIRD_HEIGHT),
-                new Point(SECOND_THIRD_WIDTH, SECOND_THIRD_HEIGHT)
+        static final Rect RIGHT_ROI = new Rect(
+                new Point(FIRST_THIRD_WIDTH + 100, FIRST_THIRD_HEIGHT),
+                new Point(SECOND_THIRD_WIDTH + 100, SECOND_THIRD_HEIGHT)
         );
 
-        public SideDetector(Telemetry t) {
+        static final Rect LEFT_ROI = new Rect(
+                new Point(FIRST_THIRD_WIDTH - 100, FIRST_THIRD_HEIGHT),
+                new Point(SECOND_THIRD_WIDTH - 100, SECOND_THIRD_HEIGHT)
+        );
+
+        private String deviceName;
+
+        public SideDetector(Telemetry t, String deviceName) {
             telemetry = new MultipleTelemetry(t, FtcDashboard.getInstance().getTelemetry());
+            this.deviceName = deviceName;
         }
 
         @Override
@@ -118,9 +130,24 @@ public class SignalSleeveWebcam extends Mechanism {
             Mat yellowMask = new Mat();
             Core.inRange(mat, lowYellow, highYellow, yellowMask);
 
-            double magentaValue = Core.sumElems(magentaMask).val[0] / ROI.area() / 255;
-            double greenValue = Core.sumElems(greenMask).val[0] / ROI.area() / 255;
-            double yellowValue = Core.sumElems(yellowMask).val[0] / ROI.area() / 255;
+            Rect ROI;
+            if (deviceName.equals("rightWebcam")) {
+                ROI = RIGHT_ROI;
+            } else {
+                ROI = LEFT_ROI;
+            }
+
+            double magentaValue, greenValue, yellowValue;
+
+            if (deviceName.equals("rightWebcam")) {
+                magentaValue = Core.sumElems(magentaMask).val[0] / ROI.area() / 255;
+                greenValue = Core.sumElems(greenMask).val[0] / ROI.area() / 255;
+                yellowValue = Core.sumElems(yellowMask).val[0] / ROI.area() / 255;
+            } else {
+                magentaValue = Core.sumElems(magentaMask).val[0] / ROI.area() / 255;
+                greenValue = Core.sumElems(greenMask).val[0] / ROI.area() / 255;
+                yellowValue = Core.sumElems(yellowMask).val[0] / ROI.area() / 255;
+            }
 
             telemetry.addData("magentaVal", magentaValue);
             telemetry.addData("greenVal", greenValue);
