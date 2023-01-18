@@ -5,25 +5,25 @@ import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.firstinspires.ftc.teamcode.hardware.SlidesFSM;
+import org.firstinspires.ftc.teamcode.hardware.ScoringFSM;
 
 @TeleOp (name = "Dev Slides", group = "dev")
 public class DevSlides extends LinearOpMode {
 
-    private SlidesFSM slidesFSM = new SlidesFSM(this);
+    private ScoringFSM scoringFSM = new ScoringFSM(this);
 
     @Override
     public void runOpMode() throws InterruptedException {
-        slidesFSM.init(hardwareMap);
+        scoringFSM.init(hardwareMap);
 
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
         waitForStart();
 
         while (opModeIsActive() && !isStopRequested()) {
-            slidesFSM.loop(gamepad1);
+            scoringFSM.loop(gamepad1);
 
-            slidesFSM.telemetry(telemetry);
+            scoringFSM.telemetry(telemetry);
             telemetry.update();
         }
     }
