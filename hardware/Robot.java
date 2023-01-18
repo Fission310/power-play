@@ -11,8 +11,6 @@ public class Robot extends Mechanism {
 
     private Drivetrain dt = new Drivetrain(opMode);
     private Intake intake = new Intake(opMode);
-//    private MXSensor mxSensor = new MXSensor(opMode);
-    private SlidesFSM slidesFSM = new SlidesFSM(opMode);
     private ScoringFSM scoringFSM = new ScoringFSM(opMode);
 
     public Robot(LinearOpMode opMode) { this.opMode = opMode; }
@@ -21,8 +19,6 @@ public class Robot extends Mechanism {
     public void init(HardwareMap hwMap) {
         dt.init(hwMap);
         intake.init(hwMap);
-//        mxSensor.init(hwMap);
-        slidesFSM.init(hwMap);
         scoringFSM.init(hwMap);
     }
 
@@ -30,15 +26,7 @@ public class Robot extends Mechanism {
     public void loop(Gamepad gamepad) {
         dt.loop(gamepad);
         intake.loop(gamepad);
-//        mxSensor.loop(gamepad);
-        slidesFSM.loop(gamepad);
         scoringFSM.loop(gamepad);
     }
 
-    @Override
-    public void telemetry(Telemetry telemetry) {
-//        mxSensor.telemetry(telemetry);
-//        slidesFSM.telemetry(telemetry);
-        scoringFSM.telemetry(telemetry);
-    }
 }

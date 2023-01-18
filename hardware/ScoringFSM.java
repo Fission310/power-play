@@ -4,108 +4,134 @@ import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.util.ElapsedTime;
 import com.stuyfission.fissionlib.util.Mechanism;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 @Config
-public class ScoringFSM extends Mechanism {
+public class SlidesFSM extends Mechanism {
 
-    public static long ARM_TO_SCORE_DELAY = 250; // milliseconds
-    public static long ARM_TO_RESET_DELAY = 200; // milliseconds
+    public static double DELAY_PREPARING = 0.2;
+    public static double DELAY_LOW = 0.2;
+    public static double DELAY_MEDIUM = 0.3;
+    public static double DELAY_HIGH = 0.5;
+    public static double DELAY_RETRACTING = 0.3;
 
-    private Arm arm = new Arm(opMode);
-    private Clamp clamp = new Clamp(opMode);
-    private ConeSensor coneSensor = new ConeSensor(opMode);
+    private SlidesMotors slidesMotors = new SlidesMotors(opMode);
 
-    private Thread scoreReadyThread;
-    private Thread scoreResetThread;
+    ElapsedTime time;
 
-    public ScoringFSM(LinearOpMode opMode) { this.opMode = opMode; }
+    public SlidesFSM(LinearOpMode opMode) { this.opMode = opMode; }
 
     @Override
     public void init(HardwareMap hwMap) {
-        arm.init(hwMap);
-        clamp.init(hwMap);
-        coneSensor.init(hwMap);
-
-        scoreReadyThread = new Thread(scoreReady);
-        scoreResetThread = new Thread(scoreReset);
+        slidesMotors.init(hwMap);
+        time = new ElapsedTime();
     }
 
-    public enum ScoreState {
+    public enum SlidesState {
         REST,
-        WAIT_INTAKE,
-        SCORE,
-        SCORING
+        PREPARING,
+        WAIT_TO_EXTEND,
+        EXTENDING,
+        WAIT_TO_RETRACT,
+        RETRACTING
     }
-    public static ScoreState scoreState = ScoreState.REST;
+    public SlidesState slidesState = SlidesState.REST;
 
-    public Runnable scoreReady = () -> {
-      try {
-          clamp.close();
-          Thread.sleep(ARM_TO_SCORE_DELAY);
-          scoreState = ScoreState.SCORE;
-      } catch (InterruptedException e) {
-          e.printStackTrace();
-      }
-    };
-
-    public Runnable scoreReset = () -> {
-        try {
-            Thread.sleep(ARM_TO_RESET_DELAY);
-            scoreState = ScoreState.REST;
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-    };
-
-    public void runThread(Thread thread) {
-        try {
-            thread.start();
-        } catch (IllegalThreadStateException ignored) {}
+    public enum SlidesLevel {
+        LOW,
+        MEDIUM,
+        HIGH
     }
+    public SlidesLevel slidesLevel = SlidesLevel.LOW;
 
     @Override
     public void loop(Gamepad gamepad) {
-        switch (scoreState) {
-            case REST:
-                arm.intakePos();
-                clamp.open();
-                scoreState = ScoreState.WAIT_INTAKE;
-                break;
-            case WAIT_INTAKE:
-                if (gamepad.left_bumper) {
-                    clamp.open();
-                } else if (gamepad.right_bumper) {
-                    clamp.close();
-                } else if (gamepad.dpad_up) {
-                    runThread(scoreReadyThread);
-                }
-                else if (coneSensor.hasCone()) {
-                    runThread(scoreReadyThread);
-                }
-                break;
-            case SCORE:
-                clamp.close();
-                arm.scorePos();
 
-                if (gamepad.x) {
-                    clamp.open();
-                    runThread(scoreResetThread);
-                    scoreState = ScoreState.SCORING;
+        if (gamepad.left_stick_button) {
+            slidesMotors.rest();
+            slidesState = SlidesState.REST;
+        }
+
+        slidesMotors.update();
+        switch (slidesState) {
+            case REST:
+                slidesMotors.rest();
+                slidesState = SlidesState.PREPARING;
+                break;
+            case PREPARING:
+                if (gamepad.right_bumper) {
+                    slidesMotors.extendPrepArm();
+                    slidesState = SlidesState.WAIT_TO_EXTEND;
+                    time.reset();
                 }
                 break;
-            case SCORING:
-                clamp.open();
+            case WAIT_TO_EXTEND:
+                if (time.seconds() > DELAY_PREPARING) {
+                    if (gamepad.a) {
+                        slidesMotors.extendLow();
+                        slidesLevel = SlidesLevel.LOW;
+                        slidesState = SlidesState.EXTENDING;
+                        time.reset();
+                    } else if (gamepad.b) {
+                        slidesMotors.extendMedium();
+                        slidesLevel = SlidesLevel.MEDIUM;
+                        slidesState = SlidesState.EXTENDING;
+                        time.reset();
+                    } else if (gamepad.y) {
+                        slidesMotors.extendHigh();
+                        slidesLevel = SlidesLevel.HIGH;
+                        slidesState = SlidesState.EXTENDING;
+                        time.reset();
+                    }
+                }
+                break;
+            case EXTENDING:
+                switch (slidesLevel) {
+                    case LOW:
+                        if (time.seconds() > DELAY_LOW) {
+                            slidesState = SlidesState.WAIT_TO_RETRACT;
+                        }
+                        break;
+                    case MEDIUM:
+                        if (time.seconds() > DELAY_MEDIUM) {
+                            slidesState = SlidesState.WAIT_TO_RETRACT;
+                        }
+                        break;
+                    case HIGH:
+                        if (time.seconds() > DELAY_HIGH) {
+                            slidesState = SlidesState.WAIT_TO_RETRACT;
+                        }
+                        break;
+                }
+                break;
+            case WAIT_TO_RETRACT:
+                if (gamepad.dpad_down) {
+                    slidesMotors.descendABit();
+                }
+                else if (gamepad.dpad_up) {
+                    slidesMotors.ascendABit();
+                }
+                else if (gamepad.x || gamepad.left_bumper) {
+                    slidesState = SlidesState.RETRACTING;
+                    time.reset();
+                }
+                break;
+            case RETRACTING:
+                if (time.seconds() > DELAY_RETRACTING) {
+                    slidesMotors.rest();
+                    slidesState = SlidesState.REST;
+                }
                 break;
         }
     }
 
     @Override
     public void telemetry(Telemetry telemetry) {
-        telemetry.addData("Current state", scoreState);
-//        coneSensor.telemetry(telemetry);
+        telemetry.addData("Current state", slidesState);
+        slidesMotors.telemetry(telemetry);
     }
 
 }
