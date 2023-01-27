@@ -20,20 +20,22 @@ public class SlidesMotors extends Mechanism {
     private static final double GEAR_RATIO = 1.0;
     private static final double TICKS_PER_REV = 145.1;
 
-    public static double MAX_VEL = 60;
-    public static double MAX_ACCEL = 60;
-    public static double RETRACTION_MULTIPLIER = 1;
+    public static double MAX_VEL = 80;
+    public static double MAX_ACCEL = 80;
+    public static double RETRACTION_MULTIPLIER = 1.25;
 
-    public static double kP = 0.1;
+    public static double kP = 0.15;
     public static double kI = 0;
     public static double kD = 0;
     // TODO: Increase for faster slides
     public static double kF = 0;
 
+    public static double POS_GROUND = 0;
     public static double POS_PREP_ARM = 15;
-    public static double POS_LOW = 33;
-    public static double POS_MEDIUM = 50;
-    public static double POS_HIGH = 72;
+    public static double POS_LOW = 28;
+    public static double POS_MEDIUM = 46;
+    public static double POS_HIGH = 69;
+    public static double POS_HIGH_AUTO = 69;
 
     public SlidesMotors(LinearOpMode opMode) { this.opMode = opMode; }
 
@@ -68,6 +70,11 @@ public class SlidesMotors extends Mechanism {
         rightSlideMotor.setTargetPosition(POS_PREP_ARM);
     }
 
+    public void extendGround() {
+        leftSlideMotor.setTargetPosition(POS_GROUND);
+        rightSlideMotor.setTargetPosition(POS_GROUND);
+    }
+
     public void extendLow() {
         leftSlideMotor.setTargetPosition(POS_LOW);
         rightSlideMotor.setTargetPosition(POS_LOW);
@@ -83,14 +90,19 @@ public class SlidesMotors extends Mechanism {
         rightSlideMotor.setTargetPosition(POS_HIGH);
     }
 
+    public void extendHighAuto() {
+        leftSlideMotor.setTargetPosition(POS_HIGH_AUTO);
+        rightSlideMotor.setTargetPosition(POS_HIGH_AUTO);
+    }
+
     public void extendToPosition(double pos) {
         leftSlideMotor.setTargetPosition(pos);
         rightSlideMotor.setTargetPosition(pos);
     }
 
     public void ascendABit() {
-        leftSlideMotor.setTargetPosition(leftSlideMotor.getPosition() + 3);
-        rightSlideMotor.setTargetPosition(rightSlideMotor.getPosition() + 3);
+        leftSlideMotor.setTargetPosition(leftSlideMotor.getPosition() + 6);
+        rightSlideMotor.setTargetPosition(rightSlideMotor.getPosition() + 6);
     }
 
     public void descendABit() {
