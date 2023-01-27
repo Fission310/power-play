@@ -13,8 +13,8 @@ public class Clamp extends Mechanism {
 
     private Servo clamp;
 
-    public static double OPEN_POS = 0.62;
-    public static double CLOSE_POS = 0.52;
+    public static double OPEN_POS = 0.63;
+    public static double CLOSE_POS = 0.54;
 
     public Clamp(LinearOpMode opMode) { this.opMode = opMode; }
 
