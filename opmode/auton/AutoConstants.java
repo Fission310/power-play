@@ -1,17 +1,19 @@
 package org.firstinspires.ftc.teamcode.opmode.auton;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
 
+@Config
 public class AutoConstants {
 
     /** ==== CONSTANTS FOR CONE AUTOS ==== **/
 
-    public static final double DELAY_PRELOAD_PICKUP = 4.5;
-    public static final double DELAY_PICKUP = 3;
+    public static final double DELAY_PRELOAD_PICKUP = 3.8; // 4.5
+    public static final double DELAY_PICKUP = 2.3; // 3
 
-    public static final double[] SLIDE_EXTEND_POSITIONS = {8.2, 7.6, 1, 0, 0, 0, 0};
-    public static final double[] ARM_CONE_STACK_POSITIONS = {0.57, 0.63, 0.63, 0.7, 0.77};
+    public static final double[] SLIDE_EXTEND_POSITIONS = {12, 11, 8.8, 6.2, 3.6, 2, 0.6, 0};
+    public static final double[] ARM_CONE_STACK_POSITIONS = {0.82, 0.82, 0.82, 0.8, 0.8, 0.8, 0.8};
 
     /** ==== END CONSTANTS FOR CONE AUTOS ==== **/
 
@@ -35,15 +37,15 @@ public class AutoConstants {
     public static final Pose2d RR_START_POSE = new Pose2d(RR_CENTER_X, RR_WALL_POS, RR_HEADING);
 
     public static final double RR_CONE_STACK_X = 60;
-    public static final double RR_CONE_STACK_Y = -15.5; // 18
+    public static final double RR_CONE_STACK_Y = -16.9; // 18
 
     public static final double RR_PRELOAD_CONE_STACK_Y = -17; // 16.5
 
-    public static final double RR_HIGH_GOAL_X = 25;
-    public static final double RR_HIGH_GOAL_Y = -5;
-    public static final double RR_HIGH_GOAL_Y_PRELOAD_OFFSET = 6 + RR_HIGH_GOAL_Y;
+    public static final double RR_HIGH_GOAL_X = 25.4;
+    public static final double RR_HIGH_GOAL_Y = -7.05;
+    public static final double RR_HIGH_GOAL_Y_PRELOAD_OFFSET = 5.8 + RR_HIGH_GOAL_Y;
 
-    public static final double RR_PRELOAD_X_OFFSET = 1;
+    public static final double RR_PRELOAD_X_OFFSET = 1.1;
 
     public static final double RR_HIGH_GOAL_ANGLE = 135;
     public static final double RR_HIGH_GOAL_TANGENT = 180;
