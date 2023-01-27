@@ -24,6 +24,14 @@ import org.openftc.easyopencv.OpenCvPipeline;
 
 @Config
 public class SignalSleeveWebcam extends Mechanism {
+
+    public enum ROBOT_SIDE {
+        CONTROL_HUB,
+        EXPANSION_HUB
+    }
+    private ROBOT_SIDE robot_side;
+
+
     private WebcamName webcamName;
     private OpenCvCamera camera;
     private SideDetector detector;
@@ -32,9 +40,10 @@ public class SignalSleeveWebcam extends Mechanism {
     private static final int WIDTH = 864;
     private static final int HEIGHT = 480;
 
-    public SignalSleeveWebcam(LinearOpMode opMode, String deviceName) {
+    public SignalSleeveWebcam(LinearOpMode opMode, String deviceName, ROBOT_SIDE robot_side) {
         this.opMode = opMode;
         this.deviceName = deviceName;
+        this.robot_side = robot_side;
     }
 
     public void init(HardwareMap hwMap) {
@@ -58,7 +67,7 @@ public class SignalSleeveWebcam extends Mechanism {
 
         camera.showFpsMeterOnViewport(true);
 
-        detector = new SideDetector(opMode.telemetry, deviceName);
+        detector = new SideDetector(opMode.telemetry, deviceName, robot_side);
         camera.setPipeline(detector);
     }
 
@@ -104,10 +113,12 @@ public class SignalSleeveWebcam extends Mechanism {
         );
 
         private String deviceName;
+        private ROBOT_SIDE robot_side;
 
-        public SideDetector(Telemetry t, String deviceName) {
+        public SideDetector(Telemetry t, String deviceName, ROBOT_SIDE robot_side) {
             telemetry = new MultipleTelemetry(t, FtcDashboard.getInstance().getTelemetry());
             this.deviceName = deviceName;
+            this.robot_side = robot_side;
         }
 
         @Override
@@ -131,23 +142,18 @@ public class SignalSleeveWebcam extends Mechanism {
             Core.inRange(mat, lowYellow, highYellow, yellowMask);
 
             Rect ROI;
-            if (deviceName.equals("rightWebcam")) {
+            if (robot_side == ROBOT_SIDE.CONTROL_HUB) {
                 ROI = RIGHT_ROI;
             } else {
                 ROI = LEFT_ROI;
             }
 
+
             double magentaValue, greenValue, yellowValue;
 
-            if (deviceName.equals("rightWebcam")) {
-                magentaValue = Core.sumElems(magentaMask).val[0] / ROI.area() / 255;
-                greenValue = Core.sumElems(greenMask).val[0] / ROI.area() / 255;
-                yellowValue = Core.sumElems(yellowMask).val[0] / ROI.area() / 255;
-            } else {
-                magentaValue = Core.sumElems(magentaMask).val[0] / ROI.area() / 255;
-                greenValue = Core.sumElems(greenMask).val[0] / ROI.area() / 255;
-                yellowValue = Core.sumElems(yellowMask).val[0] / ROI.area() / 255;
-            }
+            magentaValue = Core.sumElems(magentaMask).val[0] / ROI.area() / 255;
+            greenValue = Core.sumElems(greenMask).val[0] / ROI.area() / 255;
+            yellowValue = Core.sumElems(yellowMask).val[0] / ROI.area() / 255;
 
             telemetry.addData("magentaVal", magentaValue);
             telemetry.addData("greenVal", greenValue);
