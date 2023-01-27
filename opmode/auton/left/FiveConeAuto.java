@@ -21,7 +21,7 @@ public class FiveConeAuto extends LinearOpMode {
     private Clamp clamp;
     private Arm arm;
     private SlidesMotors slides;
-    private SignalSleeveWebcam signalSleeveWebcam = new SignalSleeveWebcam(this, "rightWebcam");
+    private SignalSleeveWebcam signalSleeveWebcam = new SignalSleeveWebcam(this, "rightWebcam", SignalSleeveWebcam.ROBOT_SIDE.EXPANSION_HUB);
 
     private SignalSleeveWebcam.Side parkSide = SignalSleeveWebcam.Side.ONE;
 
