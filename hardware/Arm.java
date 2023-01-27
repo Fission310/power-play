@@ -13,9 +13,12 @@ public class Arm extends Mechanism {
     private Servo leftArm;
     private Servo rightArm;
 
-    public static double INTAKE_POS = 0.07;
-    public static double AUTO_SCORE_POS = 0.21;
-    public static double SCORE_POS = 0.57;
+    public static double INTAKE_POS = 0.84; // 0.18
+    public static double AUTO_INTAKE_POS = 0.18;
+    public static double AUTO_SCORE_POS = 0.28;
+    public static double AUTO_CONE_STACK_POS = 0.57;
+    public static double SCORE_POS = 0.3; //0.76
+    public static double GROUND_SCORE_POS = 0.79;
 
     public Arm(LinearOpMode opMode) { this.opMode = opMode; }
 
@@ -32,14 +35,29 @@ public class Arm extends Mechanism {
         rightArm.setPosition(INTAKE_POS);
     }
 
+    public void autoIntakePos() {
+        leftArm.setPosition(AUTO_INTAKE_POS);
+        rightArm.setPosition(AUTO_INTAKE_POS);
+    }
+
     public void autoScorePos() {
         leftArm.setPosition(AUTO_SCORE_POS);
         rightArm.setPosition(AUTO_SCORE_POS);
     }
 
+    public void autoConeStackPos() {
+        leftArm.setPosition(AUTO_CONE_STACK_POS);
+        rightArm.setPosition(AUTO_CONE_STACK_POS);
+    }
+
     public void scorePos() {
         leftArm.setPosition(SCORE_POS);
         rightArm.setPosition(SCORE_POS);
+    }
+
+    public void groundScorePos() {
+        leftArm.setPosition(GROUND_SCORE_POS);
+        rightArm.setPosition(GROUND_SCORE_POS);
     }
 
     public void moveToPos(double pos) {
@@ -55,6 +73,8 @@ public class Arm extends Mechanism {
             intakePos();
         } else if (gamepad.dpad_right) {
             autoScorePos();
+        } else if (gamepad.dpad_left) {
+            autoConeStackPos();
         }
     }
 
