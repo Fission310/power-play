@@ -12,7 +12,9 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 @Config
 public class ScoringFSM extends Mechanism {
 
+    // TODO: try decreasing the delay :100:
     public static double DELAY_PREPARING = 0.2;
+
     public static double DELAY_GROUND = 0.2;
     public static double DELAY_LOW = 0.2;
     public static double DELAY_MEDIUM = 0.3;
@@ -20,12 +22,15 @@ public class ScoringFSM extends Mechanism {
     public static double DELAY_RETRACTING = 0.3;
     public static double DELAY_SCORING = 0.3;
 
+    public static double DELAY_CLAMP_INTAKE = 1;
+
     private SlidesMotors slidesMotors = new SlidesMotors(opMode);
     private Arm arm = new Arm(opMode);
     private Clamp clamp = new Clamp(opMode);
-//    private ConeSensor coneSensor = new ConeSensor(opMode);
+    private ConeSensor coneSensor = new ConeSensor(opMode);
 
-    ElapsedTime time;
+    private ElapsedTime time;
+    private boolean clampOverride;
 
     public ScoringFSM(LinearOpMode opMode) { this.opMode = opMode; }
 
@@ -34,9 +39,10 @@ public class ScoringFSM extends Mechanism {
         slidesMotors.init(hwMap);
         arm.init(hwMap);
         clamp.init(hwMap);
-//        coneSensor.init(hwMap);
+        coneSensor.init(hwMap);
 
         time = new ElapsedTime();
+        clampOverride = false;
     }
 
     public enum SlidesState {
@@ -59,18 +65,38 @@ public class ScoringFSM extends Mechanism {
     }
     public SlidesLevel slidesLevel = SlidesLevel.LOW;
 
+    // AUTOMATIC scoring mode will raise slides to high position without confirmation
+    public enum ScoringMode {
+        MANUAL,
+        AUTOMATIC
+    }
+    public ScoringMode scoringMode = ScoringMode.MANUAL;
+
     @Override
     public void loop(Gamepad gamepad) {
 
         if (gamepad.dpad_left) {
+            clampOverride = false;
             clamp.open();
         } else if (gamepad.dpad_right) {
+            clampOverride = true;
             clamp.close();
         }
 
         else if (gamepad.left_stick_button) {
+            time.reset();
             slidesMotors.rest();
             slidesState = SlidesState.REST;
+        }
+        // toggles between scoring modes
+        else if (gamepad.right_stick_button) {
+            switch (scoringMode) {
+                case MANUAL:
+                    scoringMode = ScoringMode.AUTOMATIC;
+                    break;
+                case AUTOMATIC:
+                    scoringMode = ScoringMode.MANUAL;
+            }
         }
 
         slidesMotors.update();
@@ -81,8 +107,12 @@ public class ScoringFSM extends Mechanism {
                 clamp.open();
 
                 slidesState = SlidesState.PREPARING;
+                time.reset();
                 break;
             case PREPARING:
+                if ((time.seconds() > DELAY_CLAMP_INTAKE) && !clampOverride) {
+                    clamp.intakePos();
+                }
                 if (gamepad.right_bumper) {
                     clamp.close();
                     slidesMotors.extendPrepArm();
@@ -95,28 +125,39 @@ public class ScoringFSM extends Mechanism {
 
                     arm.scorePos();
 
-                    if (gamepad.x) {
-                        slidesMotors.extendGround();
-                        arm.groundScorePos();
-                        slidesLevel = SlidesLevel.GROUND;
-                        slidesState = SlidesState.EXTENDING;
-                        time.reset();
-                    } else if (gamepad.a) {
-                        slidesMotors.extendLow();
-                        slidesLevel = SlidesLevel.LOW;
-                        slidesState = SlidesState.EXTENDING;
-                        time.reset();
-                    } else if (gamepad.b) {
-                        slidesMotors.extendMedium();
-                        slidesLevel = SlidesLevel.MEDIUM;
-                        slidesState = SlidesState.EXTENDING;
-                        time.reset();
-                    } else if (gamepad.y) {
-                        slidesMotors.extendHigh();
-                        slidesLevel = SlidesLevel.HIGH;
-                        slidesState = SlidesState.EXTENDING;
-                        time.reset();
+                    switch (scoringMode) {
+                        case MANUAL:
+                            if (gamepad.x) {
+                                slidesMotors.extendGround();
+                                arm.groundScorePos();
+                                slidesLevel = SlidesLevel.GROUND;
+                                slidesState = SlidesState.EXTENDING;
+                                time.reset();
+                            } else if (gamepad.a) {
+                                slidesMotors.extendLow();
+                                slidesLevel = SlidesLevel.LOW;
+                                slidesState = SlidesState.EXTENDING;
+                                time.reset();
+                            } else if (gamepad.b) {
+                                slidesMotors.extendMedium();
+                                slidesLevel = SlidesLevel.MEDIUM;
+                                slidesState = SlidesState.EXTENDING;
+                                time.reset();
+                            } else if (gamepad.y) {
+                                slidesMotors.extendHigh();
+                                slidesLevel = SlidesLevel.HIGH;
+                                slidesState = SlidesState.EXTENDING;
+                                time.reset();
+                            }
+                            break;
+                        case AUTOMATIC:
+                            slidesMotors.extendHigh();
+                            slidesLevel = SlidesLevel.HIGH;
+                            slidesState = SlidesState.EXTENDING;
+                            time.reset();
+                            break;
                     }
+
                 }
                 break;
             case EXTENDING:
@@ -160,7 +201,7 @@ public class ScoringFSM extends Mechanism {
                             slidesMotors.ascendABit();
                         } else if (gamepad.x || gamepad.left_bumper) {
                             // TESTS //
-                            slidesMotors.extendToPosition(slidesMotors.getPosition() - 9);
+                            slidesMotors.extendToPosition(slidesMotors.getPosition() - SlidesMotors.TELE_DROP_AMT);
                             slidesState = SlidesState.SCORING;
                             time.reset();
                             // END TESTS //
@@ -190,9 +231,11 @@ public class ScoringFSM extends Mechanism {
                 break;
             case RETRACTING:
                 if (time.seconds() > DELAY_RETRACTING) {
+                    clamp.open();
                     arm.intakePos();
                     slidesMotors.rest();
                     slidesState = SlidesState.REST;
+                    time.reset();
                 }
                 break;
         }
