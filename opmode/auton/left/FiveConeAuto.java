@@ -1,6 +1,9 @@
 package org.firstinspires.ftc.teamcode.opmode.auton.left;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.acmerobotics.roadrunner.geometry.Vector2d;
+import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryAccelerationConstraint;
+import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryVelocityConstraint;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -21,7 +24,7 @@ public class FiveConeAuto extends LinearOpMode {
     private Clamp clamp;
     private Arm arm;
     private SlidesMotors slides;
-    private SignalSleeveWebcam signalSleeveWebcam = new SignalSleeveWebcam(this, "rightWebcam", SignalSleeveWebcam.ROBOT_SIDE.EXPANSION_HUB);
+    private SignalSleeveWebcam signalSleeveWebcam = new SignalSleeveWebcam(this, "rightWebcam", SignalSleeveWebcam.ROBOT_SIDE.CONTROL_HUB);
 
     private SignalSleeveWebcam.Side parkSide = SignalSleeveWebcam.Side.ONE;
 
@@ -41,7 +44,7 @@ public class FiveConeAuto extends LinearOpMode {
         try {
             // extend slides lvl 3
             // rotate arm to intake pos
-            slides.extendHigh();
+            slides.extendHighAuto();
             Thread.sleep(100);
             arm.autoScorePos();
         } catch (InterruptedException e) {
@@ -69,6 +72,7 @@ public class FiveConeAuto extends LinearOpMode {
         PRELOAD,
         PRELOAD_TO_CS,
         CS_TO_HG,
+        SCORING,
         HG_TO_CS,
         PARK,
         IDLE
@@ -76,8 +80,20 @@ public class FiveConeAuto extends LinearOpMode {
     TrajectoryState trajectoryState = TrajectoryState.PRELOAD;
 
     /** VERY IMPORTANT **/
-    private static final int CONE_COUNT = 2;
+    private static final int CONE_COUNT = 5;
     private static int conesScored;
+
+
+    private static final double DRIFT_AMT_Y = 2; //
+    private static final double DRIFT_AMT_X = 0.05;
+
+    public static final Pose2d RL_PARK_LEFT = new Pose2d(AutoConstants.RL_PARK_LEFT_X, AutoConstants.RL_CONE_STACK_Y, AutoConstants.RL_HEADING);
+    public static final Pose2d RL_PARK_MIDDLE = new Pose2d(AutoConstants.RL_CENTER_X, AutoConstants.RL_CONE_STACK_Y, AutoConstants.RL_HEADING);
+
+    // 36 | 36 WORKS WORKS WORKS WORKS HAHA!
+
+    private static final TrajectoryVelocityConstraint VELO = SampleMecanumDrive.getVelocityConstraint(36, Math.toRadians(250), Math.toRadians(250));
+    private static final TrajectoryAccelerationConstraint ACCEL = SampleMecanumDrive.getAccelerationConstraint(36);
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -85,7 +101,7 @@ public class FiveConeAuto extends LinearOpMode {
         clamp = new Clamp(this);
         arm = new Arm(this);
         slides = new SlidesMotors(this);
-        signalSleeveWebcam.init(hardwareMap);
+//        signalSleeveWebcam.init(hardwareMap);
 
         clamp.init(hardwareMap);
         arm.init(hardwareMap);
@@ -99,39 +115,46 @@ public class FiveConeAuto extends LinearOpMode {
         conesScored = 0;
 
         TrajectorySequence preload = drive.trajectorySequenceBuilder(AutoConstants.RL_START_POSE)
+                .setConstraints(VELO, ACCEL)
                 .setTangent(Math.toRadians(90))
                 .lineToLinearHeading(new Pose2d(AutoConstants.RL_CENTER_X, AutoConstants.RL_HIGH_GOAL_Y - AutoConstants.RL_HIGH_GOAL_Y_PRELOAD_OFFSET, AutoConstants.RL_HEADING))
-                .lineToLinearHeading(new Pose2d(AutoConstants.RL_HIGH_GOAL_X + AutoConstants.RL_PRELOAD_X_OFFSET, AutoConstants.RL_HIGH_GOAL_Y, AutoConstants.RL_HEADING))
-                .waitSeconds(0.2)
+                .lineToLinearHeading(new Pose2d(AutoConstants.RL_HIGH_GOAL_X + AutoConstants.RL_PRELOAD_X_OFFSET, AutoConstants.RL_HIGH_GOAL_Y - AutoConstants.RL_HIGH_GOAL_Y_PRELOAD_OFFSET, AutoConstants.RL_HEADING))
+                .waitSeconds(0.1) // 0.1
                 .build();
 
         preloadToConeStack = drive.trajectorySequenceBuilder(preload.end())
+                .setConstraints(VELO, ACCEL)
                 .lineToLinearHeading(new Pose2d(AutoConstants.RL_CENTER_X, AutoConstants.RL_HIGH_GOAL_Y, AutoConstants.RL_HEADING))
+
                 .lineToLinearHeading(new Pose2d(AutoConstants.RL_CENTER_X, AutoConstants.RL_PRELOAD_CONE_STACK_Y + 1, AutoConstants.RL_HEADING))
                 .setReversed(true)
                 .setTangent(Math.toRadians(AutoConstants.RL_CONE_STACK_ANGLE + AutoConstants.RL_CONE_STACK_ANGLE_OFFSET))
+
                 .splineToConstantHeading(AutoConstants.RL_PRELOAD_CONE_STACK_VECTOR, Math.toRadians(AutoConstants.RL_CONE_STACK_END_ANGLE))
                 .build();
 
         coneStackToHighGoal = drive.trajectorySequenceBuilder(preloadToConeStack.end())
+                .setConstraints(VELO, ACCEL)
                 .setReversed(false)
                 .setTangent(Math.toRadians(AutoConstants.RL_HIGH_GOAL_TANGENT))
                 .splineTo(AutoConstants.RL_HIGH_GOAL_VECTOR, Math.toRadians(AutoConstants.RL_HIGH_GOAL_ANGLE))
-                .waitSeconds(0.35)
                 .build();
 
         highGoalToConeStack = drive.trajectorySequenceBuilder(coneStackToHighGoal.end())
+                .setConstraints(VELO, ACCEL)
                 .setReversed(true)
                 .setTangent(Math.toRadians(AutoConstants.RL_CONE_STACK_ANGLE))
                 .splineTo(AutoConstants.RL_CONE_STACK_VECTOR, Math.toRadians(AutoConstants.RL_CONE_STACK_END_ANGLE))
                 .build();
 
         TrajectorySequence toLeftPark = drive.trajectorySequenceBuilder(highGoalToConeStack.end())
-                .lineToLinearHeading(AutoConstants.RL_PARK_LEFT)
+                .setConstraints(VELO, ACCEL)
+                .lineToLinearHeading(RL_PARK_LEFT)
                 .build();
 
         TrajectorySequence toMiddlePark = drive.trajectorySequenceBuilder(highGoalToConeStack.end())
-                .lineToLinearHeading(AutoConstants.RL_PARK_MIDDLE)
+                .setConstraints(VELO, ACCEL)
+                .lineToLinearHeading(RL_PARK_MIDDLE)
                 .build();
 
         clamp.close();
@@ -139,9 +162,9 @@ public class FiveConeAuto extends LinearOpMode {
 
         waitForStart();
 
-        parkSide = signalSleeveWebcam.side();
+//        parkSide = signalSleeveWebcam.side();
 
-        signalSleeveWebcam.stopStreaming();
+//        signalSleeveWebcam.stopStreaming();
 
         // drive to preload
         drive.followTrajectorySequenceAsync(preload);
@@ -149,19 +172,9 @@ public class FiveConeAuto extends LinearOpMode {
 
         while (opModeIsActive() && !isStopRequested()) {
             telemetry.addData("cones scored", conesScored);
-            telemetry.addData("current state", trajectoryState);
-            telemetry.addData("canContinue", canContinue);
-            telemetry.addData("canSlidesExtend", canSlidesExtend);
-            telemetry.addData("time", time);
             telemetry.update();
             drive.update();
             slides.update();
-
-            /**  TODO:
-             *
-             *   get rid of canContinue, use timers
-             *
-             */
 
             switch (trajectoryState) {
                 case PRELOAD:
@@ -170,7 +183,7 @@ public class FiveConeAuto extends LinearOpMode {
                         runThread(scoreThread);
                         if (canContinue) {
                             conesScored += 1;
-                            slides.extendToPosition(AutoConstants.SLIDE_EXTEND_POSITIONS[conesScored]); // (8.2)
+                            slides.extendToPosition(AutoConstants.SLIDE_EXTEND_POSITIONS[conesScored]);
                             canContinue = false;
                             canSlidesExtend = true;
                             time.reset();
@@ -180,10 +193,13 @@ public class FiveConeAuto extends LinearOpMode {
                     }
                     break;
                 case PRELOAD_TO_CS:
+                    if (time.seconds() > AutoConstants.DELAY_OPEN_CLAMP) {
+                        clamp.intakePos();
+                    }
                     if (!drive.isBusy()) {
                         clamp.close();
                         if (canSlidesExtend) {
-                            slides.extendHigh();
+                            slides.extendHighAuto();
                             canSlidesExtend = false;
                         }
                         if (time.seconds() >= AutoConstants.DELAY_PRELOAD_PICKUP) {
@@ -197,6 +213,11 @@ public class FiveConeAuto extends LinearOpMode {
                     break;
                 case CS_TO_HG:
                     if (!drive.isBusy()) {
+                        trajectoryState = TrajectoryState.SCORING;
+                        time.reset();
+                    }
+                    break;
+                case SCORING:
                         clamp.open();
                         runThread(scoreThread);
                         if (canContinue) {
@@ -208,19 +229,18 @@ public class FiveConeAuto extends LinearOpMode {
                             drive.followTrajectorySequenceAsync(highGoalToConeStack);
                             trajectoryState = TrajectoryState.HG_TO_CS;
                         }
-                    }
                     break;
                 case HG_TO_CS:
                     if (conesScored >= CONE_COUNT) {
-                        slides.rest();
-                        arm.intakePos();
-                        clamp.open();
                         trajectoryState = TrajectoryState.PARK;
                     } else {
+                        if (time.seconds() > AutoConstants.DELAY_OPEN_CLAMP) {
+                            clamp.intakePos();
+                        }
                         if (!drive.isBusy()) {
                             clamp.close();
                             if (canSlidesExtend) {
-                                slides.extendHigh();
+                                slides.extendHighAuto();
                                 canSlidesExtend = false;
                             }
                             if (time.seconds() >= AutoConstants.DELAY_PICKUP) {
@@ -234,30 +254,35 @@ public class FiveConeAuto extends LinearOpMode {
                     }
                     break;
                 case PARK:
+                    slides.rest();
                     arm.intakePos();
                     clamp.open();
                     switch (parkSide) {
                         case THREE:
                             if (!drive.isBusy()) {
                                 trajectoryState = TrajectoryState.IDLE;
+                                time.reset();
                             }
                             break;
                         case TWO:
                             if (!drive.isBusy()) {
                                 trajectoryState = TrajectoryState.IDLE;
                                 drive.followTrajectorySequenceAsync(toMiddlePark);
+                                time.reset();
                             }
                             break;
                         case ONE:
                             if (!drive.isBusy()) {
                                 trajectoryState = TrajectoryState.IDLE;
                                 drive.followTrajectorySequenceAsync(toLeftPark);
+                                time.reset();
                             }
                             break;
                         case NOT_FOUND:
                         default:
                             if (!drive.isBusy()) {
                                 trajectoryState = TrajectoryState.IDLE;
+                                time.reset();
                             }
                             break;
                     }
@@ -265,6 +290,11 @@ public class FiveConeAuto extends LinearOpMode {
                 case IDLE:
                     arm.intakePos();
                     clamp.open();
+                    if (time.seconds() > 1.5) {
+                        if (!drive.isBusy()) {
+                            stop();
+                        }
+                    }
                     break;
             }
         }
