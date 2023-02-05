@@ -53,7 +53,7 @@ import static org.firstinspires.ftc.teamcode.drive.DriveConstants.kV;
  */
 @Config
 public class SampleMecanumDrive extends MecanumDrive {
-    public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(3, 0, 0);
+    public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(4, 0, 0);
     public static PIDCoefficients HEADING_PID = new PIDCoefficients(1, 0, 0);
 
     public static double LATERAL_MULTIPLIER = 1.3;
@@ -80,6 +80,9 @@ public class SampleMecanumDrive extends MecanumDrive {
 
         follower = new HolonomicPIDVAFollower(TRANSLATIONAL_PID, TRANSLATIONAL_PID, HEADING_PID,
                 new Pose2d(0.5, 0.5, Math.toRadians(5.0)), 0);
+
+        // follower = new HolonomicPIDVAFollower(TRANSLATIONAL_PID, TRANSLATIONAL_PID, HEADING_PID,
+        //                new Pose2d(0.5, 0.5, Math.toRadians(5.0)), 0);
 
         LynxModuleUtil.ensureMinimumFirmwareVersion(hardwareMap);
 
@@ -284,7 +287,7 @@ public class SampleMecanumDrive extends MecanumDrive {
 
     @Override
     public void setMotorPowers(double v, double v1, double v2, double v3) {
-        double multiplier = 12 / batteryVoltageSensor.getVoltage();
+        double multiplier = 12.5 / batteryVoltageSensor.getVoltage();
         leftFront.setPower(v * multiplier);
         leftRear.setPower(v1 * multiplier);
         rightRear.setPower(v2 * multiplier);

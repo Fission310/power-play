@@ -34,12 +34,10 @@ public class DriveConstants {
      * from DriveVelocityPIDTuner.
      */
     public static final boolean RUN_USING_ENCODER = true;
-    public static PIDFCoefficients MOTOR_VELO_PID = new PIDFCoefficients(32, 0, 8,
-            15);
-//    public static PIDFCoefficients MOTOR_VELO_PID = new PIDFCoefficients(40, 0, 16.5,
-//            13.1);
+    public static PIDFCoefficients MOTOR_VELO_PID = new PIDFCoefficients(32, 0, 12,
+            10.8);
 
-    // p : 40, d : 16.5, f : 13.1
+    // p : 32, i : 0 d : 8, f : 15
 
     /*
      * These are physical constants that can be determined from your robot (including the track
@@ -91,10 +89,10 @@ public class DriveConstants {
      * You are free to raise this on your own if you would like. It is best determined through experimentation.
 
      */
-    public static double MAX_VEL = 50; // 47 for 5 cycles; 67 for 6 cycles
-    public static double MAX_ACCEL = 44; // 47 for 5 cycles; 67 for 6 cycles
-    public static double MAX_ANG_VEL = Math.toRadians(250);
-    public static double MAX_ANG_ACCEL = Math.toRadians(250);
+    public static double MAX_VEL = 60; // 50 for 5 cone
+    public static double MAX_ACCEL = 52; // 44 for 5 cone
+    public static double MAX_ANG_VEL = Math.toRadians(500); // 250
+    public static double MAX_ANG_ACCEL = Math.toRadians(500); // 250
 
 
     public static double encoderTicksToInches(double ticks) {
