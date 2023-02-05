@@ -2,7 +2,7 @@ package org.firstinspires.ftc.teamcode.hardware;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.ColorRangeSensor;
+import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.stuyfission.fissionlib.util.Mechanism;
 
@@ -11,7 +11,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 @Config
 public class ConeSensor extends Mechanism {
 
-    private ColorRangeSensor coneSensor;
+    private ColorSensor coneSensor;
 
     public static double THRESHOLD = 150;
 
@@ -19,18 +19,18 @@ public class ConeSensor extends Mechanism {
 
     @Override
     public void init(HardwareMap hwMap) {
-        coneSensor = hwMap.get(ColorRangeSensor.class, "coneSensor");
+        coneSensor = hwMap.get(ColorSensor.class, "coneSensor");
     }
 
-    private int getBlue(ColorRangeSensor color) {
+    private int getBlue(ColorSensor color) {
         return color.blue();
     }
 
-    private int getRed(ColorRangeSensor color) {
+    private int getRed(ColorSensor color) {
         return color.red();
     }
 
-    private boolean hasConeColor(ColorRangeSensor color) {
+    private boolean hasConeColor(ColorSensor color) {
         int blue = getBlue(color);
         int red = getRed(color);
 
