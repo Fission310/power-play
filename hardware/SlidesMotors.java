@@ -20,11 +20,11 @@ public class SlidesMotors extends Mechanism {
     private static final double GEAR_RATIO = 1.0;
     private static final double TICKS_PER_REV = 145.1;
 
-    public static double MAX_VEL = 80;
-    public static double MAX_ACCEL = 80;
+    public static double MAX_VEL = 100;
+    public static double MAX_ACCEL = 100;
     public static double RETRACTION_MULTIPLIER = 1.25;
 
-    public static double kP = 0.15;
+    public static double kP = 0.25;
     public static double kI = 0;
     public static double kD = 0;
     // TODO: Increase for faster slides
@@ -32,10 +32,12 @@ public class SlidesMotors extends Mechanism {
 
     public static double POS_GROUND = 0;
     public static double POS_PREP_ARM = 15;
-    public static double POS_LOW = 28;
-    public static double POS_MEDIUM = 46;
-    public static double POS_HIGH = 69;
-    public static double POS_HIGH_AUTO = 69;
+    public static double POS_LOW = 21;
+    public static double POS_MEDIUM = 39.5;
+    public static double POS_HIGH = 59.5;
+    public static double POS_HIGH_AUTO = 59.5;
+
+    public static double TELE_DROP_AMT = 5;
 
     public SlidesMotors(LinearOpMode opMode) { this.opMode = opMode; }
 
