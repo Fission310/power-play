@@ -13,14 +13,19 @@ public class Clamp extends Mechanism {
 
     private Servo clamp;
 
-    public static double OPEN_POS = 0.63;
-    public static double CLOSE_POS = 0.54;
+    public static double INTAKE_POS = 0.1;
+    public static double OPEN_POS = 0.155;
+    public static double CLOSE_POS = 0.45;
 
     public Clamp(LinearOpMode opMode) { this.opMode = opMode; }
 
     @Override
     public void init(HardwareMap hwMap) {
         clamp = hwMap.get(Servo.class, "clamp");
+    }
+
+    public void intakePos() {
+        clamp.setPosition(INTAKE_POS);
     }
 
     public void open() {
