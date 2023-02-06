@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import com.stuyfission.fissionlib.util.Mechanism;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.opmode.auton.AutoConstants;
 
 @Config
 public class ScoringFSM extends Mechanism {
@@ -31,6 +32,8 @@ public class ScoringFSM extends Mechanism {
 
     private ElapsedTime time;
     private boolean clampOverride;
+
+    private int cycleConeStack = 1;
 
     public ScoringFSM(LinearOpMode opMode) { this.opMode = opMode; }
 
@@ -85,7 +88,7 @@ public class ScoringFSM extends Mechanism {
 
         else if (gamepad.left_stick_button) {
             time.reset();
-            slidesMotors.rest();
+            slidesMotors.teleRest();
             slidesState = SlidesState.REST;
         }
         // toggles between scoring modes
@@ -99,10 +102,25 @@ public class ScoringFSM extends Mechanism {
             }
         }
 
+        else if (gamepad.left_trigger > 0) {
+            slidesMotors.setTeleRestPos(AutoConstants.SLIDE_EXTEND_POSITIONS[cycleConeStack]);
+            time.reset();
+            slidesMotors.teleRest();
+            slidesState = SlidesState.REST;
+            cycleConeStack += 1;
+        } else if (gamepad.right_trigger > 0) {
+            slidesMotors.setTeleRestPos(0);
+            time.reset();
+            slidesMotors.teleRest();
+            slidesState = SlidesState.REST;
+            cycleConeStack = 1;
+        }
+
         slidesMotors.update();
+
         switch (slidesState) {
             case REST:
-                slidesMotors.rest();
+                slidesMotors.teleRest();
                 arm.intakePos();
                 clamp.open();
 
@@ -233,7 +251,7 @@ public class ScoringFSM extends Mechanism {
                 if (time.seconds() > DELAY_RETRACTING) {
                     clamp.open();
                     arm.intakePos();
-                    slidesMotors.rest();
+                    slidesMotors.teleRest();
                     slidesState = SlidesState.REST;
                     time.reset();
                 }

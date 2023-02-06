@@ -37,7 +37,8 @@ public class SlidesMotors extends Mechanism {
     public static double POS_HIGH = 59.5;
     public static double POS_HIGH_AUTO = 59.5;
 
-    public static double TELE_DROP_AMT = 5;
+    public static double TELE_DROP_AMT = 4;
+    private static double TELE_REST_POS = 0;
 
     public SlidesMotors(LinearOpMode opMode) { this.opMode = opMode; }
 
@@ -65,6 +66,15 @@ public class SlidesMotors extends Mechanism {
     public void rest() {
         leftSlideMotor.setTargetPosition(0);
         rightSlideMotor.setTargetPosition(0);
+    }
+
+    public void setTeleRestPos(double pos) {
+        TELE_REST_POS = pos;
+    }
+
+    public void teleRest() {
+        leftSlideMotor.setTargetPosition(TELE_REST_POS);
+        rightSlideMotor.setTargetPosition(TELE_REST_POS);
     }
 
     public void extendPrepArm() {
@@ -103,8 +113,8 @@ public class SlidesMotors extends Mechanism {
     }
 
     public void ascendABit() {
-        leftSlideMotor.setTargetPosition(leftSlideMotor.getPosition() + 6);
-        rightSlideMotor.setTargetPosition(rightSlideMotor.getPosition() + 6);
+        leftSlideMotor.setTargetPosition(leftSlideMotor.getPosition() + 9);
+        rightSlideMotor.setTargetPosition(rightSlideMotor.getPosition() + 9);
     }
 
     public void descendABit() {
