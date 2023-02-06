@@ -119,7 +119,7 @@ public class FiveConeAuto extends LinearOpMode {
                 .setTangent(Math.toRadians(90))
                 .lineToLinearHeading(new Pose2d(AutoConstants.RR_CENTER_X, AutoConstants.RR_HIGH_GOAL_Y - AutoConstants.RR_HIGH_GOAL_Y_PRELOAD_OFFSET, AutoConstants.RR_HEADING))
                 .lineToLinearHeading(new Pose2d(AutoConstants.RR_HIGH_GOAL_X + AutoConstants.RR_PRELOAD_X_OFFSET, AutoConstants.RR_HIGH_GOAL_Y - AutoConstants.RR_HIGH_GOAL_Y_PRELOAD_OFFSET, AutoConstants.RR_HEADING))
-                .waitSeconds(0.1) // 0.1
+//                .waitSeconds(0.1) // 0.1
                 .build();
 
         preloadToConeStack = drive.trajectorySequenceBuilder(preload.end())
