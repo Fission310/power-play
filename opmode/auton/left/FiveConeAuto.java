@@ -17,7 +17,7 @@ import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 
 import org.firstinspires.ftc.teamcode.opmode.auton.AutoConstants;
 
-@Autonomous (name = "LEFT_SIDE 5 Cone Auto", group = "_ared")
+//@Autonomous (name = "LEFT_SIDE 5 Cone Auto", group = "_ared")
 public class FiveConeAuto extends LinearOpMode {
 
     private SampleMecanumDrive drive;
@@ -101,7 +101,7 @@ public class FiveConeAuto extends LinearOpMode {
         clamp = new Clamp(this);
         arm = new Arm(this);
         slides = new SlidesMotors(this);
-//        signalSleeveWebcam.init(hardwareMap);
+        signalSleeveWebcam.init(hardwareMap);
 
         clamp.init(hardwareMap);
         arm.init(hardwareMap);
@@ -162,9 +162,9 @@ public class FiveConeAuto extends LinearOpMode {
 
         waitForStart();
 
-//        parkSide = signalSleeveWebcam.side();
+        parkSide = signalSleeveWebcam.side();
 
-//        signalSleeveWebcam.stopStreaming();
+        signalSleeveWebcam.stopStreaming();
 
         // drive to preload
         drive.followTrajectorySequenceAsync(preload);
@@ -232,6 +232,10 @@ public class FiveConeAuto extends LinearOpMode {
                     break;
                 case HG_TO_CS:
                     if (conesScored >= CONE_COUNT) {
+                        slides.rest();
+                        arm.intakePos();
+                        clamp.open();
+                        time.reset();
                         trajectoryState = TrajectoryState.PARK;
                     } else {
                         if (time.seconds() > AutoConstants.DELAY_OPEN_CLAMP) {
@@ -254,18 +258,21 @@ public class FiveConeAuto extends LinearOpMode {
                     }
                     break;
                 case PARK:
-                    slides.rest();
                     arm.intakePos();
-                    clamp.open();
+                    if (time.seconds() > AutoConstants.DELAY_OPEN_CLAMP) {
+                        clamp.intakePos();
+                    }
                     switch (parkSide) {
                         case THREE:
                             if (!drive.isBusy()) {
+                                clamp.close();
                                 trajectoryState = TrajectoryState.IDLE;
                                 time.reset();
                             }
                             break;
                         case TWO:
                             if (!drive.isBusy()) {
+                                clamp.close();
                                 trajectoryState = TrajectoryState.IDLE;
                                 drive.followTrajectorySequenceAsync(toMiddlePark);
                                 time.reset();
@@ -273,6 +280,7 @@ public class FiveConeAuto extends LinearOpMode {
                             break;
                         case ONE:
                             if (!drive.isBusy()) {
+                                clamp.close();
                                 trajectoryState = TrajectoryState.IDLE;
                                 drive.followTrajectorySequenceAsync(toLeftPark);
                                 time.reset();
@@ -288,8 +296,8 @@ public class FiveConeAuto extends LinearOpMode {
                     }
                     break;
                 case IDLE:
-                    arm.intakePos();
-                    clamp.open();
+                    arm.groundScorePos();
+                    clamp.close();
                     if (time.seconds() > 1.5) {
                         if (!drive.isBusy()) {
                             stop();
