@@ -100,7 +100,7 @@ public class SignalSleeveWebcam extends Mechanism {
         static final int SECOND_THIRD_WIDTH = FIRST_THIRD_WIDTH * 2 - 10;
 
         static final int FIRST_THIRD_HEIGHT = SCREEN_HEIGHT/3;
-        static final int SECOND_THIRD_HEIGHT = FIRST_THIRD_HEIGHT*2;
+        static final int SECOND_THIRD_HEIGHT = FIRST_THIRD_HEIGHT*2 - 30;
 
         static final Rect RIGHT_ROI = new Rect(
                 new Point(FIRST_THIRD_WIDTH + 100, FIRST_THIRD_HEIGHT),
