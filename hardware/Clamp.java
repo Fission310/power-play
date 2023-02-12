@@ -13,7 +13,7 @@ public class Clamp extends Mechanism {
 
     private Servo clamp;
 
-    public static double INTAKE_POS = 0.1;
+    public static double INTAKE_POS = 0.08; // 0.1
     public static double OPEN_POS = 0.155;
     public static double CLOSE_POS = 0.45;
 

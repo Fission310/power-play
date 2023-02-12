@@ -18,7 +18,7 @@ public class Arm extends Mechanism {
     public static double AUTO_SCORE_POS = 0.28;
     public static double AUTO_CONE_STACK_POS = 0.57;
     public static double SCORE_POS = 0.3; //0.76
-    public static double GROUND_SCORE_POS = 0.79;
+    public static double GROUND_SCORE_POS = 0.75;
 
     public Arm(LinearOpMode opMode) { this.opMode = opMode; }
 
