@@ -9,14 +9,14 @@ public class AutoConstants {
 
     /** ==== CONSTANTS FOR CONE AUTOS ==== **/
 
-    public static final double DELAY_PRELOAD_PICKUP = 4;
-    public static final double DELAY_PICKUP = 2.6;
-    public static final double DELAY_OPEN_CLAMP = 1.35;
+    public static final double DELAY_PRELOAD_PICKUP = 4.15; // 4.15
+    public static final double DELAY_PICKUP = 2.35; // 2.52
+    public static final double DELAY_OPEN_CLAMP = 1.25; // 1.35
 
-    public static final double DELAY_SCORING = 0.15;
+    public static final double DELAY_SCORING = 0.05; // 0.15
 
-    public static final double[] SLIDE_EXTEND_POSITIONS = {12, 8.5, 6.4, 4, 1.2, 0, 0, 0};
-    public static final double[] ARM_CONE_STACK_POSITIONS = {0.82, 0.82, 0.82, 0.82, 0.82, 0.82, 0.82};
+    public static final double[] SLIDE_EXTEND_POSITIONS = {12, 9.7, 6.7, 4.2, 1.2, 0.4, 0, 0};
+    public static final double[] ARM_CONE_STACK_POSITIONS = {0.82, 0.82, 0.82, 0.82, 0.82, 0.84, 0.9};
 
     /** ==== END CONSTANTS FOR CONE AUTOS ==== **/
 
@@ -35,16 +35,16 @@ public class AutoConstants {
     public static final double RR_CENTER_X = 35;
     public static final Pose2d RR_START_POSE = new Pose2d(RR_CENTER_X, RR_WALL_POS, RR_HEADING);
 
-    public static final double RR_CONE_STACK_X = 60;
+    public static final double RR_CONE_STACK_X = 59.5; // 60 for 5 cone!
     public static final double RR_CONE_STACK_Y = -17.2; // -17.2
 
-    public static final double RR_PRELOAD_CONE_STACK_Y = -17.45; // 16.5
+    public static final double RR_PRELOAD_CONE_STACK_Y = -17;
 
     public static final double RR_HIGH_GOAL_X = 25.4;
-    public static final double RR_HIGH_GOAL_Y = -7.5; // -8
-    public static final double RR_HIGH_GOAL_Y_PRELOAD_OFFSET = 5.8 + RR_HIGH_GOAL_Y;
+    public static final double RR_HIGH_GOAL_Y = -7.08; // -7.5
+    public static final double RR_HIGH_GOAL_Y_PRELOAD_OFFSET = 5.3 + RR_HIGH_GOAL_Y; // 5.8 +
 
-    public static final double RR_PRELOAD_X_OFFSET = 1;
+    public static final double RR_PRELOAD_X_OFFSET = 1.5; // -0.3
 
     public static final double RR_HIGH_GOAL_ANGLE = 135;
     public static final double RR_HIGH_GOAL_TANGENT = 180;
@@ -53,7 +53,7 @@ public class AutoConstants {
     public static final double RR_CONE_STACK_END_ANGLE = 0;
     public static final double RR_CONE_STACK_ANGLE_OFFSET = 25;
 
-    public static final double RR_PARK_LEFT_X = 9.3;
+    public static final double RR_PARK_LEFT_X = 11; // 9.3
 
 //    public static final Pose2d RR_PARK_LEFT = new Pose2d(RR_PARK_LEFT_X, RR_CONE_STACK_Y, RR_HEADING);
 //    public static final Pose2d RR_PARK_MIDDLE = new Pose2d(RR_CENTER_X, RR_CONE_STACK_Y, RR_HEADING);
@@ -79,7 +79,7 @@ public class AutoConstants {
 
     public static final double RL_HIGH_GOAL_X = -RR_HIGH_GOAL_X;
     public static final double RL_HIGH_GOAL_Y = RR_HIGH_GOAL_Y;
-    public static final double RL_HIGH_GOAL_Y_PRELOAD_OFFSET = 6 + RL_HIGH_GOAL_Y;
+    public static final double RL_HIGH_GOAL_Y_PRELOAD_OFFSET = 5.4 + RL_HIGH_GOAL_Y;
 
     public static final double RL_PRELOAD_X_OFFSET = -RR_PRELOAD_X_OFFSET;
 
