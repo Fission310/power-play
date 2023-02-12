@@ -75,15 +75,21 @@ public class ScoringFSM extends Mechanism {
     }
     public ScoringMode scoringMode = ScoringMode.MANUAL;
 
+    boolean isPressedLeftTrigger = false;
+    boolean isPressedRightStickButton = false;
+
     @Override
     public void loop(Gamepad gamepad) {
 
         if (gamepad.dpad_left) {
             clampOverride = false;
-            clamp.open();
+            clamp.intakePos();
+            slidesState = SlidesState.PREPARING;
         } else if (gamepad.dpad_right) {
             clampOverride = true;
             clamp.close();
+            time.reset();
+            slidesState = SlidesState.PREPARING;
         }
 
         else if (gamepad.left_stick_button) {
@@ -92,7 +98,7 @@ public class ScoringFSM extends Mechanism {
             slidesState = SlidesState.REST;
         }
         // toggles between scoring modes
-        else if (gamepad.right_stick_button) {
+        else if (!isPressedRightStickButton && gamepad.right_stick_button) {
             switch (scoringMode) {
                 case MANUAL:
                     scoringMode = ScoringMode.AUTOMATIC;
@@ -102,7 +108,7 @@ public class ScoringFSM extends Mechanism {
             }
         }
 
-        else if (gamepad.left_trigger > 0) {
+        else if (!isPressedLeftTrigger && gamepad.left_trigger > 0) {
             slidesMotors.setTeleRestPos(AutoConstants.SLIDE_EXTEND_POSITIONS[cycleConeStack]);
             time.reset();
             slidesMotors.teleRest();
@@ -115,6 +121,9 @@ public class ScoringFSM extends Mechanism {
             slidesState = SlidesState.REST;
             cycleConeStack = 1;
         }
+
+        isPressedLeftTrigger = gamepad.left_trigger > 0;
+        isPressedRightStickButton = gamepad.right_stick_button;
 
         slidesMotors.update();
 
@@ -130,6 +139,11 @@ public class ScoringFSM extends Mechanism {
             case PREPARING:
                 if ((time.seconds() > DELAY_CLAMP_INTAKE) && !clampOverride) {
                     clamp.intakePos();
+                }
+                if (clampOverride) {
+                    if (time.seconds() > DELAY_GROUND) {
+                        arm.groundScorePos();
+                    }
                 }
                 if (gamepad.right_bumper) {
                     clamp.close();
@@ -261,8 +275,7 @@ public class ScoringFSM extends Mechanism {
 
     @Override
     public void telemetry(Telemetry telemetry) {
-        telemetry.addData("Current state", slidesState);
-        slidesMotors.telemetry(telemetry);
+        telemetry.addData("restPos", slidesMotors.getTeleRestPos());
     }
 
 }
