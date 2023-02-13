@@ -28,7 +28,7 @@ public class ScoringFSM extends Mechanism {
     private SlidesMotors slidesMotors = new SlidesMotors(opMode);
     private Arm arm = new Arm(opMode);
     private Clamp clamp = new Clamp(opMode);
-    private ConeSensor coneSensor = new ConeSensor(opMode);
+//    private ConeSensor coneSensor = new ConeSensor(opMode);
 
     private ElapsedTime time;
     private boolean clampOverride;
@@ -42,7 +42,7 @@ public class ScoringFSM extends Mechanism {
         slidesMotors.init(hwMap);
         arm.init(hwMap);
         clamp.init(hwMap);
-        coneSensor.init(hwMap);
+//        coneSensor.init(hwMap);
 
         time = new ElapsedTime();
         clampOverride = false;

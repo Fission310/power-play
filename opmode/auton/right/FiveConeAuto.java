@@ -40,6 +40,13 @@ public class FiveConeAuto extends LinearOpMode {
     private boolean canContinue = false;
     private boolean canSlidesExtend = false;
 
+    private static double RR_CONE_STACK_X = 60.5;
+    private static double RR_CONE_STACK_Y = -17.2;
+    public static double RR_PRELOAD_CONE_STACK_Y = -17;
+    public static Vector2d RR_PRELOAD_CONE_STACK_VECTOR = new Vector2d(RR_CONE_STACK_X, RR_PRELOAD_CONE_STACK_Y);
+
+    public static Vector2d RR_CONE_STACK_VECTOR = new Vector2d(RR_CONE_STACK_X, RR_CONE_STACK_Y);
+
     public Runnable scoreReady = () -> {
         try {
             // extend slides lvl 3
@@ -130,7 +137,7 @@ public class FiveConeAuto extends LinearOpMode {
                 .setReversed(true)
                 .setTangent(Math.toRadians(AutoConstants.RR_CONE_STACK_ANGLE + AutoConstants.RR_CONE_STACK_ANGLE_OFFSET))
 
-                .splineToConstantHeading(AutoConstants.RR_PRELOAD_CONE_STACK_VECTOR, Math.toRadians(AutoConstants.RR_CONE_STACK_END_ANGLE))
+                .splineToConstantHeading(RR_PRELOAD_CONE_STACK_VECTOR, Math.toRadians(AutoConstants.RR_CONE_STACK_END_ANGLE))
                 .build();
 
         coneStackToHighGoal = drive.trajectorySequenceBuilder(preloadToConeStack.end())
@@ -144,7 +151,7 @@ public class FiveConeAuto extends LinearOpMode {
                 .setConstraints(VELO, ACCEL)
                 .setReversed(true)
                 .setTangent(Math.toRadians(AutoConstants.RR_CONE_STACK_ANGLE))
-                .splineTo(AutoConstants.RR_CONE_STACK_VECTOR, Math.toRadians(AutoConstants.RR_CONE_STACK_END_ANGLE))
+                .splineTo(RR_CONE_STACK_VECTOR, Math.toRadians(AutoConstants.RR_CONE_STACK_END_ANGLE))
                 .build();
 
         TrajectorySequence toLeftPark = drive.trajectorySequenceBuilder(highGoalToConeStack.end())
@@ -179,6 +186,7 @@ public class FiveConeAuto extends LinearOpMode {
             switch (trajectoryState) {
                 case PRELOAD:
                     if (!drive.isBusy()) {
+                        slides.extendToPosition(slides.getPosition() - 3);
                         clamp.open();
                         runThread(scoreThread);
                         if (canContinue) {
