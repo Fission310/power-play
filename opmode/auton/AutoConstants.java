@@ -10,7 +10,7 @@ public class AutoConstants {
     /** ==== CONSTANTS FOR CONE AUTOS ==== **/
 
     public static final double DELAY_PRELOAD_PICKUP = 4.15; // 4.15
-    public static final double DELAY_PICKUP = 2.52; // 2.52
+    public static final double DELAY_PICKUP = 2.42; // 2.52
     public static final double DELAY_OPEN_CLAMP = 1.25; // 1.35
 
     public static final double DELAY_SCORING = 0.05; // 0.15
@@ -61,6 +61,12 @@ public class AutoConstants {
     public static final Vector2d RR_HIGH_GOAL_VECTOR = new Vector2d(RR_HIGH_GOAL_X, RR_HIGH_GOAL_Y);
     public static final Vector2d RR_CONE_STACK_VECTOR = new Vector2d(RR_CONE_STACK_X, RR_CONE_STACK_Y);
     public static final Vector2d RR_PRELOAD_CONE_STACK_VECTOR = new Vector2d(RR_CONE_STACK_X, RR_PRELOAD_CONE_STACK_Y);
+
+
+    public static final double RR_MED_GOAL_X = 25.4;
+    public static final double RR_MED_GOAL_Y = -23.8;
+
+    public static final Vector2d RR_MED_GOAL_VECTOR = new Vector2d(RR_MED_GOAL_X, RR_MED_GOAL_Y);
 
     /** ======= END CONSTANTS FOR RED RIGHT ======= **/
 

@@ -11,6 +11,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.hardware.Arm;
 import org.firstinspires.ftc.teamcode.hardware.Clamp;
+import org.firstinspires.ftc.teamcode.hardware.ConeSensor;
 import org.firstinspires.ftc.teamcode.hardware.SignalSleeveWebcam;
 import org.firstinspires.ftc.teamcode.hardware.SlidesMotors;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
@@ -25,6 +26,7 @@ public class FiveConeAuto extends LinearOpMode {
     private Arm arm;
     private SlidesMotors slides;
     private SignalSleeveWebcam signalSleeveWebcam = new SignalSleeveWebcam(this, "rightWebcam", SignalSleeveWebcam.ROBOT_SIDE.CONTROL_HUB);
+    private ConeSensor coneSensor;
 
     private SignalSleeveWebcam.Side parkSide = SignalSleeveWebcam.Side.ONE;
 
@@ -90,10 +92,6 @@ public class FiveConeAuto extends LinearOpMode {
     private static final int CONE_COUNT = 5;
     private static int conesScored;
 
-
-    private static final double DRIFT_AMT_Y = 2; //
-    private static final double DRIFT_AMT_X = 0.05;
-
     public static final Pose2d RR_PARK_LEFT = new Pose2d(AutoConstants.RR_PARK_LEFT_X, AutoConstants.RR_CONE_STACK_Y, AutoConstants.RR_HEADING);
     public static final Pose2d RR_PARK_MIDDLE = new Pose2d(AutoConstants.RR_CENTER_X, AutoConstants.RR_CONE_STACK_Y, AutoConstants.RR_HEADING);
 
@@ -108,8 +106,10 @@ public class FiveConeAuto extends LinearOpMode {
         clamp = new Clamp(this);
         arm = new Arm(this);
         slides = new SlidesMotors(this);
-        signalSleeveWebcam.init(hardwareMap);
+        coneSensor = new ConeSensor(this);
 
+        signalSleeveWebcam.init(hardwareMap);
+        coneSensor.init(hardwareMap);
         clamp.init(hardwareMap);
         arm.init(hardwareMap);
         slides.init(hardwareMap);
@@ -179,6 +179,7 @@ public class FiveConeAuto extends LinearOpMode {
 
         while (opModeIsActive() && !isStopRequested()) {
             telemetry.addData("cones scored", conesScored);
+            coneSensor.telemetry(telemetry);
             telemetry.update();
             drive.update();
             slides.update();
@@ -253,6 +254,12 @@ public class FiveConeAuto extends LinearOpMode {
                             clamp.intakePos();
                         }
                         if (!drive.isBusy()) {
+//
+//                            if (coneSensor.getDistanceMM() >= 80) {
+                                Pose2d currPose = drive.getPoseEstimate();
+                                drive.setPoseEstimate(new Pose2d(currPose.getX(), currPose.getY() - 0.1, currPose.getHeading()));
+//                            }
+
                             clamp.close();
                             if (canSlidesExtend) {
                                 slides.extendHighAuto();

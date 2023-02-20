@@ -81,7 +81,7 @@ public class ScoringFSM extends Mechanism {
     @Override
     public void loop(Gamepad gamepad) {
 
-        if (gamepad.dpad_left) {
+        if (((gamepad.dpad_left) || (gamepad.left_bumper)) && (clampOverride)) {
             clampOverride = false;
             clamp.intakePos();
             slidesState = SlidesState.PREPARING;
@@ -96,6 +96,7 @@ public class ScoringFSM extends Mechanism {
             time.reset();
             slidesMotors.teleRest();
             slidesState = SlidesState.REST;
+            DELAY_CLAMP_INTAKE = 0.4;
         }
         // toggles between scoring modes
         else if (!isPressedRightStickButton && gamepad.right_stick_button) {
@@ -139,10 +140,17 @@ public class ScoringFSM extends Mechanism {
             case PREPARING:
                 if ((time.seconds() > DELAY_CLAMP_INTAKE) && !clampOverride) {
                     clamp.intakePos();
+                    arm.intakePos();
                 }
                 if (clampOverride) {
                     if (time.seconds() > DELAY_GROUND) {
                         arm.groundScorePos();
+                    }
+                    if (gamepad.dpad_up) {
+                        slidesMotors.extendToPosition(slidesMotors.getPosition() + 8);
+                    }
+                    if (gamepad.dpad_down) {
+                        slidesMotors.extendToPosition(slidesMotors.getPosition() - 3);
                     }
                 }
                 if (gamepad.right_bumper) {
@@ -160,25 +168,28 @@ public class ScoringFSM extends Mechanism {
                     switch (scoringMode) {
                         case MANUAL:
                             if (gamepad.x) {
-                                slidesMotors.extendGround();
-                                arm.groundScorePos();
-                                slidesLevel = SlidesLevel.GROUND;
-                                slidesState = SlidesState.EXTENDING;
+                                clampOverride = true;
+                                clamp.close();
                                 time.reset();
+                                slidesMotors.rest();
+                                slidesState = SlidesState.PREPARING;
                             } else if (gamepad.a) {
                                 slidesMotors.extendLow();
                                 slidesLevel = SlidesLevel.LOW;
                                 slidesState = SlidesState.EXTENDING;
+                                DELAY_CLAMP_INTAKE = 0.4;
                                 time.reset();
                             } else if (gamepad.b) {
                                 slidesMotors.extendMedium();
                                 slidesLevel = SlidesLevel.MEDIUM;
                                 slidesState = SlidesState.EXTENDING;
+                                DELAY_CLAMP_INTAKE = 0.6;
                                 time.reset();
                             } else if (gamepad.y) {
                                 slidesMotors.extendHigh();
                                 slidesLevel = SlidesLevel.HIGH;
                                 slidesState = SlidesState.EXTENDING;
+                                DELAY_CLAMP_INTAKE = 0.9;
                                 time.reset();
                             }
                             break;
@@ -186,6 +197,7 @@ public class ScoringFSM extends Mechanism {
                             slidesMotors.extendHigh();
                             slidesLevel = SlidesLevel.HIGH;
                             slidesState = SlidesState.EXTENDING;
+                            DELAY_CLAMP_INTAKE = 0.9;
                             time.reset();
                             break;
                     }
