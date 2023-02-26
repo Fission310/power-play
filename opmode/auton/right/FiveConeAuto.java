@@ -26,7 +26,6 @@ public class FiveConeAuto extends LinearOpMode {
     private Arm arm;
     private SlidesMotors slides;
     private SignalSleeveWebcam signalSleeveWebcam = new SignalSleeveWebcam(this, "rightWebcam", SignalSleeveWebcam.ROBOT_SIDE.CONTROL_HUB);
-    private ConeSensor coneSensor;
 
     private SignalSleeveWebcam.Side parkSide = SignalSleeveWebcam.Side.ONE;
 
@@ -106,10 +105,8 @@ public class FiveConeAuto extends LinearOpMode {
         clamp = new Clamp(this);
         arm = new Arm(this);
         slides = new SlidesMotors(this);
-        coneSensor = new ConeSensor(this);
 
         signalSleeveWebcam.init(hardwareMap);
-        coneSensor.init(hardwareMap);
         clamp.init(hardwareMap);
         arm.init(hardwareMap);
         slides.init(hardwareMap);
@@ -179,7 +176,6 @@ public class FiveConeAuto extends LinearOpMode {
 
         while (opModeIsActive() && !isStopRequested()) {
             telemetry.addData("cones scored", conesScored);
-            coneSensor.telemetry(telemetry);
             telemetry.update();
             drive.update();
             slides.update();

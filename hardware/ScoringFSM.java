@@ -46,6 +46,8 @@ public class ScoringFSM extends Mechanism {
 
         time = new ElapsedTime();
         clampOverride = false;
+
+        arm.intakePos();
     }
 
     public enum SlidesState {

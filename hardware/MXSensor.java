@@ -6,7 +6,9 @@ import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.AnalogInputController;
+import com.qualcomm.robotcore.hardware.DigitalChannelImpl;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.PwmControl;
 import com.stuyfission.fissionlib.util.Mechanism;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
@@ -32,6 +34,8 @@ public class MXSensor extends Mechanism {
     // Analog Sensors, they report voltage
     private AnalogInput mxSensorLeft;
     private AnalogInput mxSensorRight;
+
+
 
     // rev hubs supply 3.3 volts to analog ports
     double SUPPLIED_VOLTAGE = 3.3;
@@ -89,8 +93,17 @@ public class MXSensor extends Mechanism {
     @Override
     public void telemetry(Telemetry telemetry) {
         telemetry.addData("MM", getDistanceMM(Side.ALL));
-        telemetry.addData("LowPass MM:", getLowPassMM(Side.ALL));
+        telemetry.addData("LowPass MM", getLowPassMM(Side.ALL));
         telemetry.addData("LowPass Offset", Math.abs(getLowPassMM(Side.ALL) - getDistanceMM(Side.ALL)));
+
+        telemetry.addData("Left MM", getDistanceMM(Side.LEFT));
+        telemetry.addData("LowPass Left MM", getLowPassMM(Side.LEFT));
+
+        telemetry.addData("Right MM", getDistanceMM(Side.RIGHT));
+        telemetry.addData("LowPass Right MM", getLowPassMM(Side.RIGHT));
+
+        telemetry.addData("left voltage", mxSensorLeft.getVoltage());
+        telemetry.addData("right voltage", mxSensorRight.getVoltage());
     }
 
 }

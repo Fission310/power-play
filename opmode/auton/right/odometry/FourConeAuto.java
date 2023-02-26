@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode.opmode.auton.right.odometry;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
-import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryAccelerationConstraint;
 import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryVelocityConstraint;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
@@ -13,13 +12,12 @@ import org.firstinspires.ftc.teamcode.hardware.Arm;
 import org.firstinspires.ftc.teamcode.hardware.Clamp;
 import org.firstinspires.ftc.teamcode.hardware.SignalSleeveWebcam;
 import org.firstinspires.ftc.teamcode.hardware.SlidesMotors;
-import org.firstinspires.ftc.teamcode.opmode.auton.right.FiveConeAuto;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 
 import org.firstinspires.ftc.teamcode.opmode.auton.AutoConstants;
 
-@Autonomous (name = "ODOMETRY RIGHT_SIDE 6 Cone Auto", group = "_ared")
-public class SixConeAuto extends LinearOpMode {
+@Autonomous (name = "ODOMETRY RIGHT_SIDE 4 Cone Auto", group = "_ared")
+public class FourConeAuto extends LinearOpMode {
 
     private Arm arm;
     private SlidesMotors slides;
@@ -30,8 +28,8 @@ public class SixConeAuto extends LinearOpMode {
     private boolean canContinue = false;
     private boolean canSlidesExtend = false;
 
-    private static final double DELAY_PRELOAD_PICKUP = 4;
-    public static final double DELAY_PICKUP = 2.172;
+    private static final double DELAY_PRELOAD_PICKUP = 5;
+    public static final double DELAY_PICKUP = 2.9;
 
     public Runnable scoreReady = () -> {
         try {
@@ -74,14 +72,14 @@ public class SixConeAuto extends LinearOpMode {
     TrajectoryState trajectoryState = TrajectoryState.PRELOAD;
 
     /** VERY IMPORTANT **/
-    private static final int CONE_COUNT = 6;
+    private static final int CONE_COUNT = 4;
     private static int conesScored;
 
-    private static final TrajectoryVelocityConstraint VELO = SampleMecanumDrive.getVelocityConstraint(38, Math.toRadians(250), Math.toRadians(250));
-    private static final TrajectoryAccelerationConstraint ACCEL = SampleMecanumDrive.getAccelerationConstraint(38);
+    private static final TrajectoryVelocityConstraint VELO = SampleMecanumDrive.getVelocityConstraint(25, Math.toRadians(250), Math.toRadians(250));
+    private static final TrajectoryAccelerationConstraint ACCEL = SampleMecanumDrive.getAccelerationConstraint(25);
 
-    private static final TrajectoryVelocityConstraint FAST_VELO = SampleMecanumDrive.getVelocityConstraint(60, Math.toRadians(250), Math.toRadians(250));
-    private static final TrajectoryAccelerationConstraint FAST_ACCEL = SampleMecanumDrive.getAccelerationConstraint(60);
+//    private static final TrajectoryVelocityConstraint FAST_VELO = SampleMecanumDrive.getVelocityConstraint(40, Math.toRadians(250), Math.toRadians(250));
+//    private static final TrajectoryAccelerationConstraint FAST_ACCEL = SampleMecanumDrive.getAccelerationConstraint(40);
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -102,13 +100,13 @@ public class SixConeAuto extends LinearOpMode {
         conesScored = 0;
 
         TrajectorySequence preload = drive.trajectorySequenceBuilder(AutoConstants.RR_START_POSE)
-                .setConstraints(FAST_VELO, FAST_ACCEL)
+                .setConstraints(VELO, ACCEL)
                 .lineToLinearHeading(AutoConstants.RR_ODO_PRELOAD_HIGH_GOAL_POSE)
-                .lineToConstantHeading(AutoConstants.RR_ODO_HIGH_GOAL_VECTOR)
+                .lineToConstantHeading(AutoConstants.RR_ODO_PRELOAD_HIGH_GOAL_VECTOR)
                 .build();
 
         TrajectorySequence preloadToConeStack = drive.trajectorySequenceBuilder(preload.end())
-                .setConstraints(FAST_VELO, FAST_ACCEL)
+                .setConstraints(VELO, ACCEL)
                 .lineToLinearHeading(AutoConstants.RR_ODO_PRELOAD_HIGH_GOAL_POSE)
                 .lineToLinearHeading(AutoConstants.RR_ODO_PRELOAD_CONE_STACK_POSE)
                 .lineToConstantHeading(AutoConstants.RR_ODO_CONE_STACK_VECTOR)
@@ -136,13 +134,15 @@ public class SixConeAuto extends LinearOpMode {
                 .build();
 
         TrajectorySequence toLeftPark = drive.trajectorySequenceBuilder(toParkTemp.end())
-                .setConstraints(FAST_VELO, FAST_ACCEL)
-                .lineToConstantHeading(AutoConstants.RR_ODO_LEFT_PARK_VECTOR)
+                .setConstraints(VELO, ACCEL)
+                .lineToLinearHeading(AutoConstants.RR_ODO_LEFT_PARK_POSE)
+                .back(7)
                 .build();
 
         TrajectorySequence toRightPark = drive.trajectorySequenceBuilder(toParkTemp.end())
-                .setConstraints(FAST_VELO, FAST_ACCEL)
-                .lineToConstantHeading(AutoConstants.RR_ODO_RIGHT_PARK_VECTOR)
+                .setConstraints(VELO, ACCEL)
+                .lineToLinearHeading(AutoConstants.RR_ODO_RIGHT_PARK_POSE)
+                .back(7)
                 .build();
 
         clamp.close();
@@ -158,6 +158,7 @@ public class SixConeAuto extends LinearOpMode {
         runThread(scoreReadyThread);
 
         while (opModeIsActive() && !isStopRequested()) {
+            telemetry.addData("cones scored", conesScored);
             telemetry.update();
             drive.update();
             slides.update();
@@ -222,6 +223,9 @@ public class SixConeAuto extends LinearOpMode {
                                 time.reset();
                                 drive.followTrajectorySequenceAsync(toParkTemp);
                                 trajectoryState = TrajectoryState.PARK;
+                            } else {
+                                drive.followTrajectorySequenceAsync(highGoalToConeStack);
+                                trajectoryState = TrajectoryState.HG_TO_CS;
                             }
                         }
                     }
@@ -231,6 +235,8 @@ public class SixConeAuto extends LinearOpMode {
                         clamp.intakePos();
                     }
                     if (!drive.isBusy()) {
+//                        Pose2d currPose = drive.getPoseEstimate();
+//                        drive.setPoseEstimate(new Pose2d(currPose.getX(), currPose.getY() + 0.075, currPose.getHeading()));
                         clamp.close();
                         if (canSlidesExtend) {
                             slides.extendHighAuto();

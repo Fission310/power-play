@@ -22,19 +22,20 @@ public class SlidesMotors extends Mechanism {
 
     public static double MAX_VEL = 100;
     public static double MAX_ACCEL = 100;
-    public static double RETRACTION_MULTIPLIER = 1.25;
+    public static double RETRACTION_MULTIPLIER = 1;
 
-    public static double kP = 0.27;
+    public static double kP = 0.26;
     public static double kI = 0;
     public static double kD = 0;
     public static double kF = 0;
 
+    public static double POS_REST = -1;
     public static double POS_GROUND = 0;
     public static double POS_PREP_ARM = 15;
     public static double POS_LOW = 20.2;
     public static double POS_MEDIUM = 39;
     public static double POS_HIGH = 58.4;
-    public static double POS_HIGH_AUTO = 59;
+    public static double POS_HIGH_AUTO = 58.9;
 
     public static double TELE_DROP_AMT = 4;
     private static double TELE_REST_POS = 0;
@@ -63,8 +64,8 @@ public class SlidesMotors extends Mechanism {
     }
 
     public void rest() {
-        leftSlideMotor.setTargetPosition(0);
-        rightSlideMotor.setTargetPosition(0);
+        leftSlideMotor.setTargetPosition(POS_REST);
+        rightSlideMotor.setTargetPosition(POS_REST);
     }
 
     public void setTeleRestPos(double pos) {

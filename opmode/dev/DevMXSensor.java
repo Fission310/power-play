@@ -15,7 +15,6 @@ import java.util.List;
 public class DevMXSensor extends LinearOpMode {
 
     private MXSensor mxSensor = new MXSensor(this);
-    Telemetry telemetry;
 
     @Override
     public void runOpMode() throws InterruptedException {
