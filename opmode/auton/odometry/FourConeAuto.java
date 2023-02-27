@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.opmode.auton.right.odometry;
+package org.firstinspires.ftc.teamcode.opmode.auton.odometry;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryAccelerationConstraint;
@@ -16,8 +16,8 @@ import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 
 import org.firstinspires.ftc.teamcode.opmode.auton.AutoConstants;
 
-@Autonomous (name = "ODOMETRY RIGHT_SIDE 5 Cone Auto", group = "_ared")
-public class FiveConeAuto extends LinearOpMode {
+@Autonomous (name = "HIGH 4 Cone Auto", group = "_ared")
+public class FourConeAuto extends LinearOpMode {
 
     private Arm arm;
     private SlidesMotors slides;
@@ -28,8 +28,8 @@ public class FiveConeAuto extends LinearOpMode {
     private boolean canContinue = false;
     private boolean canSlidesExtend = false;
 
-    private static final double DELAY_PRELOAD_PICKUP = 4.5;
-    public static final double DELAY_PICKUP = 2.5;
+    private static final double DELAY_PRELOAD_PICKUP = 5;
+    public static final double DELAY_PICKUP = 2.9;
 
     public Runnable scoreReady = () -> {
         try {
@@ -72,14 +72,14 @@ public class FiveConeAuto extends LinearOpMode {
     TrajectoryState trajectoryState = TrajectoryState.PRELOAD;
 
     /** VERY IMPORTANT **/
-    private static final int CONE_COUNT = 5;
+    private static final int CONE_COUNT = 4;
     private static int conesScored;
 
-    private static final TrajectoryVelocityConstraint VELO = SampleMecanumDrive.getVelocityConstraint(36, Math.toRadians(250), Math.toRadians(250));
-    private static final TrajectoryAccelerationConstraint ACCEL = SampleMecanumDrive.getAccelerationConstraint(36);
+    private static final TrajectoryVelocityConstraint VELO = SampleMecanumDrive.getVelocityConstraint(25, Math.toRadians(250), Math.toRadians(250));
+    private static final TrajectoryAccelerationConstraint ACCEL = SampleMecanumDrive.getAccelerationConstraint(25);
 
-    private static final TrajectoryVelocityConstraint FAST_VELO = SampleMecanumDrive.getVelocityConstraint(40, Math.toRadians(250), Math.toRadians(250));
-    private static final TrajectoryAccelerationConstraint FAST_ACCEL = SampleMecanumDrive.getAccelerationConstraint(40);
+//    private static final TrajectoryVelocityConstraint FAST_VELO = SampleMecanumDrive.getVelocityConstraint(40, Math.toRadians(250), Math.toRadians(250));
+//    private static final TrajectoryAccelerationConstraint FAST_ACCEL = SampleMecanumDrive.getAccelerationConstraint(40);
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -134,20 +134,15 @@ public class FiveConeAuto extends LinearOpMode {
                 .build();
 
         TrajectorySequence toLeftPark = drive.trajectorySequenceBuilder(toParkTemp.end())
-                .setConstraints(FAST_VELO, FAST_ACCEL)
+                .setConstraints(VELO, ACCEL)
                 .lineToLinearHeading(AutoConstants.RR_ODO_LEFT_PARK_POSE)
-                .back(9)
-                .build();
-
-        TrajectorySequence toMiddlePark = drive.trajectorySequenceBuilder(toParkTemp.end())
-//                .setConstraints(FAST_VELO, FAST_ACCEL)
-                .strafeRight(1)
+                .back(7)
                 .build();
 
         TrajectorySequence toRightPark = drive.trajectorySequenceBuilder(toParkTemp.end())
-                .setConstraints(FAST_VELO, FAST_ACCEL)
+                .setConstraints(VELO, ACCEL)
                 .lineToLinearHeading(AutoConstants.RR_ODO_RIGHT_PARK_POSE)
-                .back(9)
+                .back(7)
                 .build();
 
         clamp.close();
@@ -240,8 +235,8 @@ public class FiveConeAuto extends LinearOpMode {
                         clamp.intakePos();
                     }
                     if (!drive.isBusy()) {
-                        Pose2d currPose = drive.getPoseEstimate();
-                        drive.setPoseEstimate(new Pose2d(currPose.getX(), currPose.getY() + 0.085, currPose.getHeading()));
+//                        Pose2d currPose = drive.getPoseEstimate();
+//                        drive.setPoseEstimate(new Pose2d(currPose.getX(), currPose.getY() + 0.075, currPose.getHeading()));
                         clamp.close();
                         if (canSlidesExtend) {
                             slides.extendHighAuto();
@@ -269,7 +264,6 @@ public class FiveConeAuto extends LinearOpMode {
                         case TWO:
                             if (!drive.isBusy()) {
                                 clamp.close();
-                                drive.followTrajectorySequenceAsync(toMiddlePark);
                                 trajectoryState = TrajectoryState.IDLE;
                                 time.reset();
                             }

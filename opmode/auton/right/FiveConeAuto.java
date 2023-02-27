@@ -5,6 +5,7 @@ import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryAccelerationConstraint;
 import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryVelocityConstraint;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -18,7 +19,8 @@ import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 
 import org.firstinspires.ftc.teamcode.opmode.auton.AutoConstants;
 
-@Autonomous (name = "RIGHT_SIDE 5 Cone Auto", group = "_bred")
+@Disabled
+@Autonomous (name = "ENCODER 5 Cone Auto", group = "_bred")
 public class FiveConeAuto extends LinearOpMode {
 
     private SampleMecanumDrive drive;
