@@ -11,7 +11,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.hardware.Drivetrain;
 import org.firstinspires.ftc.teamcode.util.Encoder;
 
-@TeleOp
+@TeleOp (name = "Dev Encoder", group = "dev")
 @Disabled
 public class DevEncoder extends LinearOpMode {
 
