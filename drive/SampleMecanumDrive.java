@@ -27,6 +27,7 @@ import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
 
+import org.firstinspires.ftc.teamcode.hardware.DriftCompensatedDrivetrain;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceBuilder;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceRunner;
@@ -135,8 +136,8 @@ public class SampleMecanumDrive extends MecanumDrive {
         // TODO: if desired, use setLocalizer() to change the localization method
         // for instance, setLocalizer(new ThreeTrackingWheelLocalizer(...));
 //        setLocalizer(new StandardTrackingWheelLocalizer(hardwareMap));
-//        setLocalizer(new TwoWheelTrackingLocalizer(hardwareMap, this));
-        setLocalizer(new FilteredTwoWheelTrackingLocalizer(hardwareMap, this));
+        setLocalizer(new TwoWheelTrackingLocalizer(hardwareMap, this));
+//        setLocalizer(new FilteredTwoWheelTrackingLocalizer(hardwareMap, this));
 
         trajectorySequenceRunner = new TrajectorySequenceRunner(follower, HEADING_PID);
     }
@@ -286,13 +287,22 @@ public class SampleMecanumDrive extends MecanumDrive {
         return wheelVelocities;
     }
 
+    public List<Double> getWheelPowers() {
+        List<Double> wheelPowers = new ArrayList<>();
+
+        for (DcMotorEx motor : motors) {
+            wheelPowers.add(motor.getPower());
+        }
+        return wheelPowers;
+    }
+
     @Override
     public void setMotorPowers(double v, double v1, double v2, double v3) {
         double multiplier = 12.5 / batteryVoltageSensor.getVoltage();
-        leftFront.setPower(v * multiplier);
-        leftRear.setPower(v1 * multiplier);
-        rightRear.setPower(v2 * multiplier);
-        rightFront.setPower(v3 * multiplier);
+        leftFront.setPower(v * multiplier * DriftCompensatedDrivetrain.FRONT_LEFT_MULTIPLIER);
+        leftRear.setPower(v1 * multiplier * DriftCompensatedDrivetrain.BACK_LEFT_MULTIPLIER);
+        rightRear.setPower(v2 * multiplier * DriftCompensatedDrivetrain.BACK_RIGHT_MULTIPLIER);
+        rightFront.setPower(v3 * multiplier * DriftCompensatedDrivetrain.FRONT_RIGHT_MULTIPLIER);
     }
 
     @Override

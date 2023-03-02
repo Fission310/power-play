@@ -36,7 +36,7 @@ public class FiveConeAuto extends LinearOpMode {
             Thread.sleep(150);
             // extend slides lvl 3
             // rotate arm to intake pos
-            slides.extendHighAuto();
+            slides.extendMedium();
             Thread.sleep(100);
             arm.autoScorePos();
         } catch (InterruptedException e) {
@@ -75,11 +75,11 @@ public class FiveConeAuto extends LinearOpMode {
     private static final int CONE_COUNT = 5;
     private static int conesScored;
 
-    private static final TrajectoryVelocityConstraint VELO = SampleMecanumDrive.getVelocityConstraint(36, Math.toRadians(250), Math.toRadians(250));
-    private static final TrajectoryAccelerationConstraint ACCEL = SampleMecanumDrive.getAccelerationConstraint(36);
+    private static final TrajectoryVelocityConstraint VELO = SampleMecanumDrive.getVelocityConstraint(43, Math.toRadians(250), Math.toRadians(250));
+    private static final TrajectoryAccelerationConstraint ACCEL = SampleMecanumDrive.getAccelerationConstraint(43);
 
-    private static final TrajectoryVelocityConstraint FAST_VELO = SampleMecanumDrive.getVelocityConstraint(40, Math.toRadians(250), Math.toRadians(250));
-    private static final TrajectoryAccelerationConstraint FAST_ACCEL = SampleMecanumDrive.getAccelerationConstraint(40);
+    private static final TrajectoryVelocityConstraint FAST_VELO = SampleMecanumDrive.getVelocityConstraint(60, Math.toRadians(250), Math.toRadians(250));
+    private static final TrajectoryAccelerationConstraint FAST_ACCEL = SampleMecanumDrive.getAccelerationConstraint(52);
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -135,8 +135,8 @@ public class FiveConeAuto extends LinearOpMode {
 
         TrajectorySequence toLeftPark = drive.trajectorySequenceBuilder(toParkTemp.end())
                 .setConstraints(FAST_VELO, FAST_ACCEL)
-                .lineToLinearHeading(AutoConstants.RR_ODO_LEFT_PARK_POSE)
-                .back(9)
+                .lineToLinearHeading(AutoConstants.RR_ODO_MID_LEFT_PARK_POSE)
+                .forward(9)
                 .build();
 
         TrajectorySequence toMiddlePark = drive.trajectorySequenceBuilder(toParkTemp.end())
@@ -146,8 +146,8 @@ public class FiveConeAuto extends LinearOpMode {
 
         TrajectorySequence toRightPark = drive.trajectorySequenceBuilder(toParkTemp.end())
                 .setConstraints(FAST_VELO, FAST_ACCEL)
-                .lineToLinearHeading(AutoConstants.RR_ODO_RIGHT_PARK_POSE)
-                .back(9)
+                .lineToLinearHeading(AutoConstants.RR_ODO_MID_RIGHT_PARK_POSE)
+                .forward(9)
                 .build();
 
         clamp.close();
@@ -192,7 +192,7 @@ public class FiveConeAuto extends LinearOpMode {
                     if (!drive.isBusy()) {
                         clamp.close();
                         if (canSlidesExtend) {
-                            slides.extendHighAuto();
+                            slides.extendMedium();
                             canSlidesExtend = false;
                         }
                         if (time.seconds() >= DELAY_PRELOAD_PICKUP) {
@@ -241,10 +241,10 @@ public class FiveConeAuto extends LinearOpMode {
                     }
                     if (!drive.isBusy()) {
                         Pose2d currPose = drive.getPoseEstimate();
-                        drive.setPoseEstimate(new Pose2d(currPose.getX(), currPose.getY() + 0.085, currPose.getHeading()));
+                        drive.setPoseEstimate(new Pose2d(currPose.getX(), currPose.getY() + 0.25, currPose.getHeading()));
                         clamp.close();
                         if (canSlidesExtend) {
-                            slides.extendHighAuto();
+                            slides.extendMedium();
                             canSlidesExtend = false;
                         }
                         if (time.seconds() >= DELAY_PICKUP) {
