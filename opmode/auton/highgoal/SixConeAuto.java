@@ -16,7 +16,7 @@ import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 
 import org.firstinspires.ftc.teamcode.opmode.auton.AutoConstants;
 
-@Autonomous (name = "HIGH 6 Cone Auto", group = "_ared")
+@Autonomous (name = "HIGH 6 Cone Auto", group = "_ared", preselectTeleOp = "Drift Comp Main")
 public class SixConeAuto extends LinearOpMode {
 
     private Arm arm;
@@ -142,7 +142,7 @@ public class SixConeAuto extends LinearOpMode {
 
         TrajectorySequence toMiddlePark = drive.trajectorySequenceBuilder(toParkTemp.end())
                 .setConstraints(VELO, ACCEL)
-                .strafeRight(1)
+                .strafeLeft(2)
                 .build();
 
         TrajectorySequence toRightPark = drive.trajectorySequenceBuilder(toParkTemp.end())
@@ -192,7 +192,7 @@ public class SixConeAuto extends LinearOpMode {
                     }
                     if (!drive.isBusy()) {
                         Pose2d currPose = drive.getPoseEstimate();
-                        drive.setPoseEstimate(new Pose2d(currPose.getX(), currPose.getY() + 0.16, currPose.getHeading()));
+                        drive.setPoseEstimate(new Pose2d(currPose.getX(), currPose.getY() + 0.15, currPose.getHeading()));
                         clamp.close();
                         if (canSlidesExtend) {
                             slides.extendHighAuto();
@@ -295,7 +295,7 @@ public class SixConeAuto extends LinearOpMode {
                     }
                     break;
                 case IDLE:
-                    arm.intakePos();
+                    arm.autoConeStackPos();
                     clamp.close();
                     if (time.seconds() > 1.5) {
                         if (!drive.isBusy()) {

@@ -16,7 +16,7 @@ import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 
 import org.firstinspires.ftc.teamcode.opmode.auton.AutoConstants;
 
-@Autonomous (name = "MID 6 Cone Auto", group = "_ared")
+@Autonomous (name = "MID 6 Cone Auto", group = "_ared", preselectTeleOp = "Drift Comp Main")
 public class SixConeAuto extends LinearOpMode {
 
     private Arm arm;
@@ -29,7 +29,7 @@ public class SixConeAuto extends LinearOpMode {
     private boolean canSlidesExtend = false;
 
     private static final double DELAY_PRELOAD_PICKUP = 4;
-    public static final double DELAY_PICKUP = 2.17;
+    public static final double DELAY_PICKUP = 2.14;
 
     public Runnable scoreReady = () -> {
         try {
@@ -292,7 +292,7 @@ public class SixConeAuto extends LinearOpMode {
                     }
                     break;
                 case IDLE:
-                    arm.intakePos();
+                    arm.autoConeStackPos();
                     clamp.close();
                     if (time.seconds() > 1.5) {
                         if (!drive.isBusy()) {

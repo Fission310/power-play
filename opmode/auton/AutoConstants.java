@@ -16,7 +16,7 @@ public class AutoConstants {
     public static final double DELAY_SCORING = 0.05; // 0.15
 
     public static final double[] SLIDE_EXTEND_POSITIONS = {12, 8.8, 5.8, 3.3, 0.6, 0, 0, 0};
-    public static final double[] ARM_CONE_STACK_POSITIONS = {0.82, 0.83, 0.83, 0.83, 0.83, 0.88, 0.94};
+    public static final double[] ARM_CONE_STACK_POSITIONS = {0.82, 0.83, 0.83, 0.83, 0.83, 0.9, 0.96};
 
     /** ==== END CONSTANTS FOR CONE AUTOS ==== **/
 
@@ -80,8 +80,8 @@ public class AutoConstants {
     public static final Vector2d RR_ODO_CONE_STACK_VECTOR_SIX = new Vector2d(RR_ODO_CONE_STACK_X_SIX, RR_ODO_CONE_STACK_Y_SIX);
     public static final Pose2d RR_ODO_PRELOAD_CONE_STACK_POSE_SIX = new Pose2d(RR_CENTER_X, RR_ODO_CONE_STACK_Y_SIX, RR_HEADING);
 
-    public static final double RR_ODO_CONE_STACK_X = 60.5; //61.5
-    public static final double RR_ODO_CONE_STACK_Y = -12.9;
+    public static final double RR_ODO_CONE_STACK_X = 60.8; //61.5
+    public static final double RR_ODO_CONE_STACK_Y = -13.1;
     public static final Vector2d RR_ODO_CONE_STACK_VECTOR = new Vector2d(RR_ODO_CONE_STACK_X, RR_ODO_CONE_STACK_Y);
     public static final Pose2d RR_ODO_PRELOAD_CONE_STACK_POSE = new Pose2d(RR_CENTER_X, RR_ODO_CONE_STACK_Y, RR_HEADING);
 
@@ -106,9 +106,9 @@ public class AutoConstants {
     public static final Vector2d RR_ODO_PRELOAD_HIGH_GOAL_VECTOR = new Vector2d(RR_ODO_PRELOAD_HIGH_GOAL_X, RR_ODO_PRELOAD_HIGH_GOAL_Y);
     public static final Pose2d RR_ODO_PRELOAD_HIGH_GOAL_POSE = new Pose2d(RR_CENTER_X, RR_ODO_PRELOAD_HIGH_GOAL_Y, RR_HEADING);
 
-    public static final Vector2d RR_ODO_MIDDLE_PARK_VECTOR = new Vector2d(RR_CENTER_X + 4, RR_ODO_CONE_STACK_Y + 1.5);
+    public static final Vector2d RR_ODO_MIDDLE_PARK_VECTOR = new Vector2d(RR_CENTER_X + 2.5, RR_ODO_CONE_STACK_Y + 0.5);
 
-    public static final double RR_ODO_LEFT_PARK_X = 13.5;
+    public static final double RR_ODO_LEFT_PARK_X = 14.5;
     public static final Pose2d RR_ODO_LEFT_PARK_POSE = new Pose2d(RR_ODO_LEFT_PARK_X, RR_ODO_CONE_STACK_Y - 2.5, RR_ODO_SIDE_PARK_HEADING);
 
     public static final double RR_ODO_RIGHT_PARK_X = 59.5;
@@ -128,13 +128,13 @@ public class AutoConstants {
     public static final Vector2d RR_ODO_PRELOAD_MID_GOAL_VECTOR = new Vector2d(RR_ODO_PRELOAD_MID_GOAL_X, RR_ODO_PRELOAD_MID_GOAL_Y);
     public static final Pose2d RR_ODO_PRELOAD_MID_GOAL_POSE = new Pose2d(RR_CENTER_X, RR_ODO_PRELOAD_MID_GOAL_Y, RR_HEADING);
 
-    public static final Vector2d RR_ODO_MID_MIDDLE_PARK_VECTOR = new Vector2d(RR_CENTER_X + 4, RR_ODO_CONE_STACK_Y + 2);
+    public static final Vector2d RR_ODO_MID_MIDDLE_PARK_VECTOR = new Vector2d(RR_CENTER_X + 4, RR_ODO_CONE_STACK_Y + 3.25);
 
-    public static final double RR_ODO_MID_CONE_STACK_X = 60.8; //61.5
-    public static final double RR_ODO_MID_CONE_STACK_Y = -10;
+    public static final double RR_ODO_MID_CONE_STACK_X = 61.5; //61.5
+    public static final double RR_ODO_MID_CONE_STACK_Y = -10.75;
     public static final Vector2d RR_ODO_MID_CONE_STACK_VECTOR = new Vector2d(RR_ODO_MID_CONE_STACK_X, RR_ODO_MID_CONE_STACK_Y);
 
-    public static final Pose2d RR_ODO_MID_LEFT_PARK_POSE = new Pose2d(RR_ODO_LEFT_PARK_X, RR_ODO_CONE_STACK_Y - 2.5, RR_ODO_MID_SIDE_PARK_HEADING);
+    public static final Pose2d RR_ODO_MID_LEFT_PARK_POSE = new Pose2d(RR_ODO_LEFT_PARK_X + 0.5, RR_ODO_CONE_STACK_Y - 2.5, RR_ODO_MID_SIDE_PARK_HEADING);
     public static final Pose2d RR_ODO_MID_RIGHT_PARK_POSE = new Pose2d(RR_ODO_RIGHT_PARK_X, RR_ODO_CONE_STACK_Y - 2.5, RR_ODO_MID_SIDE_PARK_HEADING);
     // END ODO FOR MID GOAL //
 
