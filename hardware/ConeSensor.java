@@ -13,22 +13,28 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 @Config
 public class ConeSensor extends Mechanism {
 
-    private DistanceSensor coneSensor;
+    private ColorSensor coneSensor;
+
+    public static double THRESHOLD = 150;
 
     public ConeSensor(LinearOpMode opMode) { this.opMode = opMode; }
 
     @Override
     public void init(HardwareMap hwMap) {
-        coneSensor = hwMap.get(DistanceSensor.class, "coneSensor");
+        coneSensor = hwMap.get(ColorSensor.class, "coneSensor");
     }
 
-    public double getDistanceMM() {
-        return coneSensor.getDistance(DistanceUnit.MM);
+    public boolean hasCone() {
+        if (( coneSensor.red() >= THRESHOLD ) || ( coneSensor.blue() >= THRESHOLD )) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     @Override
     public void telemetry(Telemetry telemetry) {
-        telemetry.addData("distance", coneSensor.getDistance(DistanceUnit.MM));
+        telemetry.addData("hasCone", hasCone());
     }
 
 }
