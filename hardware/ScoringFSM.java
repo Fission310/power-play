@@ -21,7 +21,7 @@ public class ScoringFSM extends Mechanism {
     public static double DELAY_MEDIUM = 0.3;
     public static double DELAY_HIGH = 0.5;
     public static double DELAY_RETRACTING = 0.3;
-    public static double DELAY_SCORING = 0.15; //0.3
+    public static double DELAY_SCORING = 0.07; //0.3
 
     public static double DELAY_CLAMP_INTAKE = 1;
 
@@ -33,7 +33,7 @@ public class ScoringFSM extends Mechanism {
     private ElapsedTime time;
     private boolean clampOverride;
 
-    private int cycleConeStack = 1;
+    private int cycleConeStack = 0;
 
     public ScoringFSM(LinearOpMode opMode) { this.opMode = opMode; }
 
@@ -115,7 +115,7 @@ public class ScoringFSM extends Mechanism {
             slidesMotors.setTeleRestPos(AutoConstants.SLIDE_EXTEND_POSITIONS[cycleConeStack]);
             time.reset();
             slidesMotors.teleRest();
-            slidesState = SlidesState.REST;
+            slidesState = SlidesState.PREPARING;
             cycleConeStack += 1;
         } else if (gamepad.right_trigger > 0) {
             slidesMotors.setTeleRestPos(0);
