@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.hardware.DriftCompensatedRobot;
 
-@TeleOp (name = "Drift Comp Main", group = "_ymain")
+@TeleOp (name = "Drift Comp Main", group = "_amain")
 public class DriftCompensatedMain extends LinearOpMode {
 
     private DriftCompensatedRobot robot = new DriftCompensatedRobot(this);

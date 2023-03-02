@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.hardware.Robot;
 
-@TeleOp (name = "SingleMain", group = "_main")
+@TeleOp (name = "SingleMain", group = "_bmain")
 public class SingleMain extends LinearOpMode {
 
     private Robot robot = new Robot(this);
