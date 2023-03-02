@@ -16,8 +16,8 @@ import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 
 import org.firstinspires.ftc.teamcode.opmode.auton.AutoConstants;
 
-@Autonomous (name = "MID 5 Cone Auto", group = "_ared")
-public class FiveConeAuto extends LinearOpMode {
+@Autonomous (name = "MID 6 Cone Auto", group = "_ared")
+public class SixConeAuto extends LinearOpMode {
 
     private Arm arm;
     private SlidesMotors slides;
@@ -28,8 +28,8 @@ public class FiveConeAuto extends LinearOpMode {
     private boolean canContinue = false;
     private boolean canSlidesExtend = false;
 
-    private static final double DELAY_PRELOAD_PICKUP = 4.5;
-    public static final double DELAY_PICKUP = 2.5;
+    private static final double DELAY_PRELOAD_PICKUP = 4;
+    public static final double DELAY_PICKUP = 2.17;
 
     public Runnable scoreReady = () -> {
         try {
@@ -72,7 +72,7 @@ public class FiveConeAuto extends LinearOpMode {
     TrajectoryState trajectoryState = TrajectoryState.PRELOAD;
 
     /** VERY IMPORTANT **/
-    private static final int CONE_COUNT = 5;
+    private static final int CONE_COUNT = 6;
     private static int conesScored;
 
     private static final TrajectoryVelocityConstraint VELO = SampleMecanumDrive.getVelocityConstraint(43, Math.toRadians(250), Math.toRadians(250));
@@ -123,14 +123,14 @@ public class FiveConeAuto extends LinearOpMode {
                 .setConstraints(VELO, ACCEL)
                 .setReversed(false)
                 .setTangent(AutoConstants.RR_ODO_MID_CONE_STACK_TANGENT)
-                .splineTo(AutoConstants.RR_ODO_CONE_STACK_VECTOR, AutoConstants.RR_ODO_CONE_STACK_HEADING)
+                .splineTo(AutoConstants.RR_ODO_MID_CONE_STACK_VECTOR, AutoConstants.RR_ODO_CONE_STACK_HEADING)
                 .build();
 
         TrajectorySequence toParkTemp = drive.trajectorySequenceBuilder(coneStackToHighGoal.end())
                 .setConstraints(VELO, ACCEL)
                 .setReversed(false)
-                .setTangent(AutoConstants.RR_ODO_CONE_STACK_TANGENT)
-                .splineTo(AutoConstants.RR_ODO_MIDDLE_PARK_VECTOR, AutoConstants.RR_ODO_MID_MIDDLE_PARK_HEADING)
+                .setTangent(AutoConstants.RR_ODO_MID_CONE_STACK_TANGENT)
+                .splineTo(AutoConstants.RR_ODO_MID_MIDDLE_PARK_VECTOR, AutoConstants.RR_ODO_MID_MIDDLE_PARK_HEADING)
                 .build();
 
         TrajectorySequence toLeftPark = drive.trajectorySequenceBuilder(toParkTemp.end())
@@ -241,7 +241,7 @@ public class FiveConeAuto extends LinearOpMode {
                     }
                     if (!drive.isBusy()) {
                         Pose2d currPose = drive.getPoseEstimate();
-                        drive.setPoseEstimate(new Pose2d(currPose.getX(), currPose.getY() + 0.25, currPose.getHeading()));
+                        drive.setPoseEstimate(new Pose2d(currPose.getX(), currPose.getY() - 0.195, currPose.getHeading()));
                         clamp.close();
                         if (canSlidesExtend) {
                             slides.extendMedium();
@@ -292,7 +292,7 @@ public class FiveConeAuto extends LinearOpMode {
                     }
                     break;
                 case IDLE:
-                    arm.scorePos();
+                    arm.intakePos();
                     clamp.close();
                     if (time.seconds() > 1.5) {
                         if (!drive.isBusy()) {
