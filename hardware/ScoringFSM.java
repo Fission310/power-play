@@ -21,7 +21,7 @@ public class ScoringFSM extends Mechanism {
     public static double DELAY_MEDIUM = 0.3;
     public static double DELAY_HIGH = 0.5;
     public static double DELAY_RETRACTING = 0.3;
-    public static double DELAY_SCORING = 0.3;
+    public static double DELAY_SCORING = 0.15; //0.3
 
     public static double DELAY_CLAMP_INTAKE = 1;
 
@@ -257,6 +257,12 @@ public class ScoringFSM extends Mechanism {
 //                            slidesState = SlidesState.RETRACTING;
 //                            time.reset();
                             // END HOW IT WAS BEFORE //
+                        } else if (gamepad.a) {
+                            slidesMotors.extendLow();
+                        } else if (gamepad.b) {
+                            slidesMotors.extendMedium();
+                        } else if (gamepad.y) {
+                            slidesMotors.extendHigh();
                         }
                         break;
                 }
