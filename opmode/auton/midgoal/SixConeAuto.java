@@ -28,8 +28,8 @@ public class SixConeAuto extends LinearOpMode {
     private boolean canContinue = false;
     private boolean canSlidesExtend = false;
 
-    private static final double DELAY_PRELOAD_PICKUP = 4;
-    public static final double DELAY_PICKUP = 2.14;
+    private static final double DELAY_PRELOAD_PICKUP = 4.05;
+    public static final double DELAY_PICKUP = 2.185;
 
     public Runnable scoreReady = () -> {
         try {
@@ -141,7 +141,7 @@ public class SixConeAuto extends LinearOpMode {
 
         TrajectorySequence toMiddlePark = drive.trajectorySequenceBuilder(toParkTemp.end())
                 .setConstraints(VELO, ACCEL)
-                .strafeRight(1)
+                .lineToLinearHeading(new Pose2d(AutoConstants.RR_ODO_MID_MIDDLE_PARK_VECTOR.getX() - 2, AutoConstants.RR_ODO_MID_MIDDLE_PARK_VECTOR.getY(), Math.toRadians(265)))
                 .build();
 
         TrajectorySequence toRightPark = drive.trajectorySequenceBuilder(toParkTemp.end())

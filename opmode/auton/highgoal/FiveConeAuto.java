@@ -241,7 +241,7 @@ public class FiveConeAuto extends LinearOpMode {
                     }
                     if (!drive.isBusy()) {
                         Pose2d currPose = drive.getPoseEstimate();
-                        drive.setPoseEstimate(new Pose2d(currPose.getX(), currPose.getY() + 0.085, currPose.getHeading()));
+                        drive.setPoseEstimate(new Pose2d(currPose.getX(), currPose.getY() + 0.07, currPose.getHeading()));
                         clamp.close();
                         if (canSlidesExtend) {
                             slides.extendHighAuto();

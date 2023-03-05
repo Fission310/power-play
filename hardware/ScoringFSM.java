@@ -13,8 +13,7 @@ import org.firstinspires.ftc.teamcode.opmode.auton.AutoConstants;
 @Config
 public class ScoringFSM extends Mechanism {
 
-    // TODO: try decreasing the delay :100:
-    public static double DELAY_PREPARING = 0.2;
+    public static double DELAY_PREPARING = 0.1;
 
     public static double DELAY_GROUND = 0.2;
     public static double DELAY_LOW = 0.2;
