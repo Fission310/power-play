@@ -141,7 +141,7 @@ public class SixConeAuto extends LinearOpMode {
 
         TrajectorySequence toMiddlePark = drive.trajectorySequenceBuilder(toParkTemp.end())
                 .setConstraints(VELO, ACCEL)
-                .lineToLinearHeading(new Pose2d(AutoConstants.RR_ODO_MID_MIDDLE_PARK_VECTOR.getX() - 2, AutoConstants.RR_ODO_MID_MIDDLE_PARK_VECTOR.getY(), Math.toRadians(265)))
+                .lineToLinearHeading(new Pose2d(AutoConstants.RR_ODO_MID_MIDDLE_PARK_VECTOR.getX() - 2, AutoConstants.RR_ODO_MID_MIDDLE_PARK_VECTOR.getY() - 2.8, Math.toRadians(265)))
                 .build();
 
         TrajectorySequence toRightPark = drive.trajectorySequenceBuilder(toParkTemp.end())
