@@ -20,6 +20,7 @@ import org.firstinspires.ftc.teamcode.opmode.auton.AutoConstants;
 public class SixConeAuto extends LinearOpMode {
 
     private Arm arm;
+    private Clamp clamp;
     private SlidesMotors slides;
     private final SignalSleeveWebcam signalSleeveWebcam = new SignalSleeveWebcam(this, "rightWebcam", SignalSleeveWebcam.ROBOT_SIDE.CONTROL_HUB);
 
@@ -33,7 +34,9 @@ public class SixConeAuto extends LinearOpMode {
 
     public Runnable scoreReady = () -> {
         try {
+            clamp.close();
             Thread.sleep(500);
+            clamp.close();
             // extend slides lvl 3
             // rotate arm to intake pos
             slides.extendHighAuto();
@@ -84,7 +87,7 @@ public class SixConeAuto extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
-        Clamp clamp = new Clamp(this);
+        clamp = new Clamp(this);
         arm = new Arm(this);
         slides = new SlidesMotors(this);
         signalSleeveWebcam.init(hardwareMap);
@@ -163,6 +166,7 @@ public class SixConeAuto extends LinearOpMode {
 
         drive.followTrajectorySequenceAsync(preload);
         runThread(scoreReadyThread);
+        clamp.close();
 
         while (opModeIsActive() && !isStopRequested()) {
             telemetry.addData("cones scored", conesScored);
@@ -245,7 +249,7 @@ public class SixConeAuto extends LinearOpMode {
                     }
                     if (!drive.isBusy()) {
                         Pose2d currPose = drive.getPoseEstimate();
-                        drive.setPoseEstimate(new Pose2d(currPose.getX(), currPose.getY() + 0.205, currPose.getHeading()));
+                        drive.setPoseEstimate(new Pose2d(currPose.getX(), currPose.getY() + 0.197, currPose.getHeading()));
                         clamp.close();
                         if (canSlidesExtend) {
                             slides.extendHighAuto();

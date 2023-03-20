@@ -16,7 +16,7 @@ public class AutoConstants {
     public static final double DELAY_SCORING = 0.05; // 0.15
 
     public static final double[] SLIDE_EXTEND_POSITIONS = {12, 8.8, 5.8, 3.3, 0.6, 0, 0, 0};
-    public static final double[] ARM_CONE_STACK_POSITIONS = {0.82, 0.83, 0.83, 0.83, 0.83, 0.9, 0.96};
+    public static final double[] ARM_CONE_STACK_POSITIONS = {0.82, 0.83, 0.83, 0.83, 0.83, 0.9, 0.9};
 
     /** ==== END CONSTANTS FOR CONE AUTOS ==== **/
 
@@ -80,14 +80,14 @@ public class AutoConstants {
     public static final Vector2d RR_ODO_CONE_STACK_VECTOR_SIX = new Vector2d(RR_ODO_CONE_STACK_X_SIX, RR_ODO_CONE_STACK_Y_SIX);
     public static final Pose2d RR_ODO_PRELOAD_CONE_STACK_POSE_SIX = new Pose2d(RR_CENTER_X, RR_ODO_CONE_STACK_Y_SIX, RR_HEADING);
 
-    public static final double RR_ODO_CONE_STACK_X = 60.8; //61.5
+    public static final double RR_ODO_CONE_STACK_X = 61; //61.5
     public static final double RR_ODO_CONE_STACK_Y = -12.6;
     public static final Vector2d RR_ODO_CONE_STACK_VECTOR = new Vector2d(RR_ODO_CONE_STACK_X, RR_ODO_CONE_STACK_Y);
     public static final Pose2d RR_ODO_PRELOAD_CONE_STACK_POSE = new Pose2d(RR_CENTER_X, RR_ODO_CONE_STACK_Y, RR_HEADING);
 
 
-    public static final double RR_ODO_HIGH_GOAL_X_SIX = 28.7; //26.75
-    public static final double RR_ODO_HIGH_GOAL_Y_SIX = -4.1; //-2.69
+    public static final double RR_ODO_HIGH_GOAL_X_SIX = 28.1; //26.75
+    public static final double RR_ODO_HIGH_GOAL_Y_SIX = -3.8; //-2.69
 
     public static final double RR_ODO_PRELOAD_HIGH_GOAL_X_SIX = 28.6;
     public static final double RR_ODO_PRELOAD_HIGH_GOAL_Y_SIX = -0.5;
@@ -137,6 +137,12 @@ public class AutoConstants {
     public static final Pose2d RR_ODO_MID_LEFT_PARK_POSE = new Pose2d(RR_ODO_LEFT_PARK_X + 0.5, RR_ODO_CONE_STACK_Y - 2.5, RR_ODO_MID_SIDE_PARK_HEADING);
     public static final Pose2d RR_ODO_MID_RIGHT_PARK_POSE = new Pose2d(RR_ODO_RIGHT_PARK_X, RR_ODO_CONE_STACK_Y - 2.5, RR_ODO_MID_SIDE_PARK_HEADING);
     // END ODO FOR MID GOAL //
+
+    public static final double C_HIGH_GOAL_X = 3;
+    public static final double C_HIGH_GOAL_Y = -20;
+    public static final Vector2d C_HIGH_GOAL_VECTOR = new Vector2d(C_HIGH_GOAL_X, C_HIGH_GOAL_Y);
+    public static final Vector2d RR_ODO_PRELOAD_CONE_STACK_VECTOR = new Vector2d(RR_CENTER_X, RR_ODO_CONE_STACK_Y);
+
 
     // END ODO CONSTANTS //
 

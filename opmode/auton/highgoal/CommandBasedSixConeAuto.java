@@ -4,75 +4,104 @@ import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryAccelerationConstraint;
 import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryVelocityConstraint;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import com.stuyfission.fissionlib.command.AutoCommandMachine;
+import com.stuyfission.fissionlib.command.Command;
+import com.stuyfission.fissionlib.command.CommandImpl;
+import com.stuyfission.fissionlib.command.CommandSequence;
 
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.hardware.Arm;
 import org.firstinspires.ftc.teamcode.hardware.Clamp;
 import org.firstinspires.ftc.teamcode.hardware.SignalSleeveWebcam;
 import org.firstinspires.ftc.teamcode.hardware.SlidesMotors;
+import org.firstinspires.ftc.teamcode.opmode.auton.AutoConstants;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 
-import org.firstinspires.ftc.teamcode.opmode.auton.AutoConstants;
+@Disabled
+@SuppressWarnings("FieldMayBeFinal")
+@Autonomous (name = "HIGH COMMAND 6 Cone Auto", group = "_ared", preselectTeleOp = "Drift Comp Main")
+public class CommandBasedSixConeAuto extends LinearOpMode {
 
-@Autonomous (name = "HIGH 6 Cone Auto", group = "_ared", preselectTeleOp = "Drift Comp Main")
-public class SixConeAuto extends LinearOpMode {
-
+    private SampleMecanumDrive drive;
     private Arm arm;
     private SlidesMotors slides;
+    private Clamp clamp;
     private final SignalSleeveWebcam signalSleeveWebcam = new SignalSleeveWebcam(this, "rightWebcam", SignalSleeveWebcam.ROBOT_SIDE.CONTROL_HUB);
 
-    ElapsedTime time = new ElapsedTime();
+    private TrajectorySequence preload;
+    private TrajectorySequence preloadToConeStack;
+    private TrajectorySequence coneStackToHighGoal;
+    private TrajectorySequence highGoalToConeStack;
+    private TrajectorySequence toParkTemp;
+    private TrajectorySequence toLeftPark;
+    private TrajectorySequence toMiddlePark;
+    private TrajectorySequence toRightPark;
 
-    private boolean canContinue = false;
-    private boolean canSlidesExtend = false;
 
-    private static final double DELAY_PRELOAD_PICKUP = 3.9;
-    public static final double DELAY_PICKUP = 2.1;
+    private Command preloadTraj = () -> drive.followTrajectorySequenceAsync(preload);
+    private Command highSlides = () -> slides.extendHighAuto();
+    private Command armScorePos = () -> arm.autoScorePos();
+    private Command preloadToConeStackTraj = () -> drive.followTrajectorySequenceAsync(preloadToConeStack);
+    private CommandSequence driveToPreloadCommandSeq = new CommandSequence()
+            .addCommand(preloadTraj)
+            .addWaitCommand(0.5)
+            .addCommand(highSlides)
+            .addWaitCommand(0.1)
+            .addCommand(armScorePos)
+            .build();
 
-    public Runnable scoreReady = () -> {
-        try {
-            Thread.sleep(500);
-            // extend slides lvl 3
-            // rotate arm to intake pos
-            slides.extendHighAuto();
-            Thread.sleep(100);
-            arm.autoScorePos();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+    private Command closeClamp = () -> clamp.close();
+    private Command coneStackToHighGoalTraj = () -> drive.followTrajectorySequenceAsync(coneStackToHighGoal);
+    private CommandSequence pickupConeAndDriveToHighGoalCommandSeq = new CommandSequence()
+            .addCommand(closeClamp)
+            .addWaitCommand(0.1)
+            .addCommand(highSlides)
+            .addWaitCommand(0.1)
+            .addCommand(armScorePos)
+            .addCommand(coneStackToHighGoalTraj)
+            .build();
+
+    private Command dropSlides = () -> slides.extendToPosition(slides.getPosition() - 3);
+    private Command openClamp = () -> clamp.open();
+    private Command resetArmSlides = () -> {
+        conesScored++;
+        arm.moveToPos(AutoConstants.ARM_CONE_STACK_POSITIONS[conesScored]);
+        slides.extendToPosition(AutoConstants.SLIDE_EXTEND_POSITIONS[conesScored]);
     };
+    private Command highGoalToConeStackTraj = () -> drive.followTrajectorySequenceAsync(highGoalToConeStack);
+    private Command intakePosClamp = () -> clamp.intakePos();
+    private CommandSequence scoreAndDriveToConeStackCommandSeq = new CommandSequence()
+            .addCommand(dropSlides)
+            .addWaitCommand(0.05)
+            .addCommand(openClamp)
+            .addWaitCommand(0.1)
+            .addCommand(resetArmSlides)
+            .addCommand(highGoalToConeStackTraj)
+            .addWaitCommand(0.35)
+            .addCommand(intakePosClamp)
+            .build();
 
-    public Runnable score = () -> {
-        try {
-            Thread.sleep(200);
-            arm.moveToPos(AutoConstants.ARM_CONE_STACK_POSITIONS[conesScored]);
-            canContinue = true;
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-    };
+    private CommandSequence scorePreloadAndDriveToConeStackCommandSeq = new CommandSequence()
+            .addCommand(dropSlides)
+            .addWaitCommand(0.05)
+            .addCommand(openClamp)
+            .addCommand(resetArmSlides)
+            .addCommand(preloadToConeStackTraj)
+            .addWaitCommand(0.35)
+            .addCommand(intakePosClamp)
+            .build();
 
-    public void runThread(Thread thread) {
-        try {
-            thread.start();
-        } catch (IllegalThreadStateException ignored) {}
-    }
-
-    private enum TrajectoryState {
-        PRELOAD,
-        PRELOAD_TO_CS,
-        CS_TO_HG,
-        SCORING,
-        HG_TO_CS,
-        PARK,
-        IDLE
-    }
-    TrajectoryState trajectoryState = TrajectoryState.PRELOAD;
+    private AutoCommandMachine autoCommandMachine = new AutoCommandMachine()
+            .addCommandSequence(driveToPreloadCommandSeq)
+            .addCommandSequence(scorePreloadAndDriveToConeStackCommandSeq)
+            .addCommandSequence(pickupConeAndDriveToHighGoalCommandSeq)
+            .addCommandSequence(scoreAndDriveToConeStackCommandSeq)
+            .build();
 
     /** VERY IMPORTANT **/
-    private static final int CONE_COUNT = 6;
     private static int conesScored;
 
     private static final TrajectoryVelocityConstraint VELO = SampleMecanumDrive.getVelocityConstraint(43, Math.toRadians(250), Math.toRadians(250));
@@ -83,29 +112,27 @@ public class SixConeAuto extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
-        SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
-        Clamp clamp = new Clamp(this);
+        drive = new SampleMecanumDrive(hardwareMap);
         arm = new Arm(this);
         slides = new SlidesMotors(this);
+        clamp = new Clamp(this);
+
         signalSleeveWebcam.init(hardwareMap);
         clamp.init(hardwareMap);
         arm.init(hardwareMap);
         slides.init(hardwareMap);
 
-        Thread scoreReadyThread = new Thread(scoreReady);
-        Thread scoreThread = new Thread(score);
-
         drive.setPoseEstimate(AutoConstants.RR_START_POSE);
 
         conesScored = 0;
 
-        TrajectorySequence preload = drive.trajectorySequenceBuilder(AutoConstants.RR_START_POSE)
+        preload = drive.trajectorySequenceBuilder(AutoConstants.RR_START_POSE)
                 .setConstraints(FAST_VELO, FAST_ACCEL)
                 .lineToLinearHeading(AutoConstants.RR_ODO_PRELOAD_HIGH_GOAL_POSE_SIX)
                 .lineToConstantHeading(AutoConstants.RR_ODO_PRELOAD_HIGH_GOAL_VECTOR_SIX)
                 .build();
 
-        TrajectorySequence preloadToConeStack = drive.trajectorySequenceBuilder(preload.end())
+        preloadToConeStack = drive.trajectorySequenceBuilder(preload.end())
                 .setConstraints(FAST_VELO, FAST_ACCEL)
                 .lineToLinearHeading(AutoConstants.RR_ODO_PRELOAD_HIGH_GOAL_POSE_SIX)
                 .lineToLinearHeading(AutoConstants.RR_ODO_PRELOAD_CONE_STACK_POSE_SIX)
@@ -113,40 +140,39 @@ public class SixConeAuto extends LinearOpMode {
                 .lineToConstantHeading(AutoConstants.RR_ODO_CONE_STACK_VECTOR_SIX)
                 .build();
 
-        TrajectorySequence coneStackToHighGoal = drive.trajectorySequenceBuilder(preloadToConeStack.end())
+        coneStackToHighGoal = drive.trajectorySequenceBuilder(preloadToConeStack.end())
                 .setConstraints(VELO, ACCEL)
                 .setReversed(true)
                 .setTangent(AutoConstants.RR_HEADING)
                 .splineTo(AutoConstants.RR_ODO_HIGH_GOAL_VECTOR_SIX, AutoConstants.RR_ODO_HIGH_GOAL_HEADING)
                 .build();
 
-        TrajectorySequence highGoalToConeStack = drive.trajectorySequenceBuilder(coneStackToHighGoal.end())
+        highGoalToConeStack = drive.trajectorySequenceBuilder(coneStackToHighGoal.end())
                 .setConstraints(VELO, ACCEL)
                 .setReversed(false)
                 .setTangent(AutoConstants.RR_ODO_CONE_STACK_TANGENT)
                 .splineTo(AutoConstants.RR_ODO_CONE_STACK_VECTOR_SIX, AutoConstants.RR_ODO_CONE_STACK_HEADING)
                 .build();
 
-        TrajectorySequence toParkTemp = drive.trajectorySequenceBuilder(coneStackToHighGoal.end())
+        toParkTemp = drive.trajectorySequenceBuilder(coneStackToHighGoal.end())
                 .setConstraints(VELO, ACCEL)
                 .setReversed(false)
                 .setTangent(AutoConstants.RR_ODO_CONE_STACK_TANGENT)
                 .splineTo(AutoConstants.RR_ODO_MIDDLE_PARK_VECTOR, AutoConstants.RR_ODO_MIDDLE_PARK_HEADING)
                 .build();
 
-        TrajectorySequence toLeftPark = drive.trajectorySequenceBuilder(toParkTemp.end())
+        toLeftPark = drive.trajectorySequenceBuilder(toParkTemp.end())
                 .setConstraints(FAST_VELO, FAST_ACCEL)
                 .lineToLinearHeading(AutoConstants.RR_ODO_LEFT_PARK_POSE)
                 .back(9)
                 .build();
 
-        TrajectorySequence toMiddlePark = drive.trajectorySequenceBuilder(toParkTemp.end())
+        toMiddlePark = drive.trajectorySequenceBuilder(toParkTemp.end())
                 .setConstraints(VELO, ACCEL)
-//                .strafeLeft(2)
                 .lineToLinearHeading(new Pose2d(AutoConstants.RR_ODO_MIDDLE_PARK_VECTOR.getX() - 2, AutoConstants.RR_ODO_MIDDLE_PARK_VECTOR.getY(), Math.toRadians(90)))
                 .build();
 
-        TrajectorySequence toRightPark = drive.trajectorySequenceBuilder(toParkTemp.end())
+        toRightPark = drive.trajectorySequenceBuilder(toParkTemp.end())
                 .setConstraints(FAST_VELO, FAST_ACCEL)
                 .lineToLinearHeading(AutoConstants.RR_ODO_RIGHT_PARK_POSE)
                 .back(9)
@@ -161,150 +187,13 @@ public class SixConeAuto extends LinearOpMode {
 
         signalSleeveWebcam.stopStreaming();
 
-        drive.followTrajectorySequenceAsync(preload);
-        runThread(scoreReadyThread);
 
         while (opModeIsActive() && !isStopRequested()) {
             telemetry.addData("cones scored", conesScored);
             telemetry.update();
             drive.update();
             slides.update();
-
-            switch (trajectoryState) {
-                case PRELOAD:
-                    if (!drive.isBusy()) {
-                        slides.extendToPosition(slides.getPosition() - 3);
-                        clamp.open();
-                        runThread(scoreThread);
-                        if (canContinue) {
-                            conesScored += 1;
-                            slides.extendToPosition(AutoConstants.SLIDE_EXTEND_POSITIONS[conesScored]);
-                            canContinue = false;
-                            canSlidesExtend = true;
-                            time.reset();
-                            drive.followTrajectorySequenceAsync(preloadToConeStack);
-                            trajectoryState = TrajectoryState.PRELOAD_TO_CS;
-                        }
-                    }
-                    break;
-                case PRELOAD_TO_CS:
-                    if (time.seconds() > AutoConstants.DELAY_OPEN_CLAMP) {
-                        clamp.intakePos();
-                    }
-                    if (!drive.isBusy()) {
-                        Pose2d currPose = drive.getPoseEstimate();
-                        drive.setPoseEstimate(new Pose2d(currPose.getX(), currPose.getY() + 0.15, currPose.getHeading()));
-                        clamp.close();
-                        if (canSlidesExtend) {
-                            slides.extendHighAuto();
-                            canSlidesExtend = false;
-                        }
-                        if (time.seconds() >= DELAY_PRELOAD_PICKUP) {
-                            arm.autoScorePos();
-                            canContinue = false;
-                            canSlidesExtend = true;
-                            drive.followTrajectorySequenceAsync(coneStackToHighGoal);
-                            trajectoryState = TrajectoryState.CS_TO_HG;
-                        }
-                    }
-                    break;
-                case CS_TO_HG:
-                    if (!drive.isBusy()) {
-                        slides.extendToPosition(slides.getPosition() - 3);
-                        trajectoryState = TrajectoryState.SCORING;
-                        time.reset();
-                    }
-                    break;
-                case SCORING:
-                    if (time.seconds() >= AutoConstants.DELAY_SCORING) {
-                        clamp.open();
-                        runThread(scoreThread);
-                        if (canContinue) {
-                            conesScored += 1;
-                            slides.extendToPosition(AutoConstants.SLIDE_EXTEND_POSITIONS[conesScored]);
-                            canContinue = false;
-                            canSlidesExtend = true;
-                            time.reset();
-                            if (conesScored >= CONE_COUNT) {
-                                slides.rest();
-                                arm.intakePos();
-                                clamp.open();
-                                time.reset();
-                                drive.followTrajectorySequenceAsync(toParkTemp);
-                                trajectoryState = TrajectoryState.PARK;
-                            } else {
-                                drive.followTrajectorySequenceAsync(highGoalToConeStack);
-                                trajectoryState = TrajectoryState.HG_TO_CS;
-                            }
-                        }
-                    }
-                    break;
-                case HG_TO_CS:
-                    if (time.seconds() > AutoConstants.DELAY_OPEN_CLAMP) {
-                        clamp.intakePos();
-                    }
-                    if (!drive.isBusy()) {
-                        Pose2d currPose = drive.getPoseEstimate();
-                        drive.setPoseEstimate(new Pose2d(currPose.getX(), currPose.getY() + 0.197, currPose.getHeading()));
-                        clamp.close();
-                        if (canSlidesExtend) {
-                            slides.extendHighAuto();
-                            canSlidesExtend = false;
-                        }
-                        if (time.seconds() >= DELAY_PICKUP) {
-                            arm.autoScorePos();
-                            canContinue = false;
-                            canSlidesExtend = true;
-                            drive.followTrajectorySequenceAsync(coneStackToHighGoal);
-                            trajectoryState = TrajectoryState.CS_TO_HG;
-                        }
-                    }
-                    break;
-                case PARK:
-                    switch (parkSide) {
-                        case THREE:
-                            if (!drive.isBusy()) {
-                                clamp.close();
-                                drive.followTrajectorySequenceAsync(toRightPark);
-                                trajectoryState = TrajectoryState.IDLE;
-                                time.reset();
-                            }
-                            break;
-                        case TWO:
-                            if (!drive.isBusy()) {
-                                clamp.close();
-                                drive.followTrajectorySequenceAsync(toMiddlePark);
-                                trajectoryState = TrajectoryState.IDLE;
-                                time.reset();
-                            }
-                            break;
-                        case ONE:
-                            if (!drive.isBusy()) {
-                                clamp.close();
-                                drive.followTrajectorySequenceAsync(toLeftPark);
-                                trajectoryState = TrajectoryState.IDLE;
-                                time.reset();
-                            }
-                            break;
-                        case NOT_FOUND:
-                        default:
-                            if (!drive.isBusy()) {
-                                trajectoryState = TrajectoryState.IDLE;
-                                time.reset();
-                            }
-                            break;
-                    }
-                    break;
-                case IDLE:
-                    arm.autoConeStackPos();
-                    clamp.close();
-                    if (time.seconds() > 1.5) {
-                        if (!drive.isBusy()) {
-                            stop();
-                        }
-                    }
-                    break;
-            }
+            autoCommandMachine.run(drive.isBusy());
         }
     }
 }
