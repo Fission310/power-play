@@ -8,14 +8,16 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.stuyfission.fissionlib.util.Mechanism;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
+
 @Config
 public class Clamp extends Mechanism {
 
     private Servo clamp;
 
-    public static double INTAKE_POS = 0.08; // 0.1
-    public static double OPEN_POS = 0.155;
-    public static double CLOSE_POS = 0.45;
+    public static double INTAKE_POS = 0.23; // 0.1
+    public static double OPEN_POS = 0.13;
+    public static double CLOSE_POS = 0.03;
 
     public Clamp(LinearOpMode opMode) { this.opMode = opMode; }
 
