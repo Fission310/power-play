@@ -32,7 +32,7 @@ public class ScoringFSM extends Mechanism {
     private ElapsedTime time;
     private boolean clampOverride;
 
-    private int cycleConeStack = 0;
+    private int cycleConeStack = 1;
 
     public ScoringFSM(LinearOpMode opMode) { this.opMode = opMode; }
 
@@ -47,6 +47,7 @@ public class ScoringFSM extends Mechanism {
         clampOverride = false;
 
         arm.intakePos();
+        slidesMotors.setMotionConstraints(200);
     }
 
     public enum SlidesState {
@@ -111,7 +112,7 @@ public class ScoringFSM extends Mechanism {
         }
 
         else if (!isPressedLeftTrigger && gamepad.left_trigger > 0) {
-            slidesMotors.setTeleRestPos(AutoConstants.SLIDE_EXTEND_POSITIONS[cycleConeStack]);
+            slidesMotors.setTeleRestPos(AutoConstants.SLIDE_EXTEND_POSITIONS[cycleConeStack] + 0.2);
             time.reset();
             slidesMotors.teleRest();
             slidesState = SlidesState.PREPARING;
@@ -119,7 +120,8 @@ public class ScoringFSM extends Mechanism {
         } else if (gamepad.right_trigger > 0) {
             slidesMotors.setTeleRestPos(0);
             time.reset();
-            slidesMotors.teleRest();
+            slidesMotors.extendToPosition(slidesMotors.getPosition() - 5);
+//            slidesMotors.teleRest();
             slidesState = SlidesState.REST;
             cycleConeStack = 1;
         }

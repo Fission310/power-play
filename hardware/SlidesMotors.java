@@ -22,7 +22,7 @@ public class SlidesMotors extends Mechanism {
 
     public static double MAX_VEL = 100;
     public static double MAX_ACCEL = 100;
-    public static double RETRACTION_MULTIPLIER = 1;
+    public static double RETRACTION_MULTIPLIER = 0.75;
 
     public static double kP = 0.26;
     public static double kI = 0;
@@ -61,6 +61,11 @@ public class SlidesMotors extends Mechanism {
         rightSlideMotor.setTargetPosition(0);
         // TODO: uncomment to reverse motor direction
         rightSlideMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+    }
+
+    public void setMotionConstraints(double value) {
+        leftSlideMotor.setMotionConstraints(value, value);
+        rightSlideMotor.setMotionConstraints(value, value);
     }
 
     public void rest() {

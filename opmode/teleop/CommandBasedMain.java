@@ -6,12 +6,13 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.hardware.CommandBasedRobot;
 import org.firstinspires.ftc.teamcode.hardware.DriftCompensatedRobot;
 
-@TeleOp (name = "Drift Comp Main", group = "_amain")
-public class DriftCompensatedMain extends LinearOpMode {
+@TeleOp (name = "Command Main", group = "_amain")
+public class CommandBasedMain extends LinearOpMode {
 
-    private DriftCompensatedRobot robot = new DriftCompensatedRobot(this);
+    private CommandBasedRobot robot = new CommandBasedRobot(this);
 
     @Override
     public void runOpMode() throws InterruptedException {
