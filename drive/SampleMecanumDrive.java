@@ -211,6 +211,11 @@ public class SampleMecanumDrive extends MecanumDrive {
         if (signal != null) setDriveSignal(signal);
     }
 
+    public void update(Pose2d poseEstimate, Pose2d poseVelocity) {
+        DriveSignal signal = trajectorySequenceRunner.update(poseEstimate, poseVelocity);
+        if (signal != null) setDriveSignal(signal);
+    }
+
     public void waitForIdle() {
         while (!Thread.currentThread().isInterrupted() && isBusy())
             update();
