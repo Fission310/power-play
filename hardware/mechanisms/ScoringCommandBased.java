@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.hardware;
+package org.firstinspires.ftc.teamcode.hardware.mechanisms;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.Gamepad;
@@ -6,7 +6,6 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.stuyfission.fissionlib.command.Command;
 import com.stuyfission.fissionlib.command.CommandMachine;
 import com.stuyfission.fissionlib.command.CommandSequence;
-import com.stuyfission.fissionlib.command.WaitCommand;
 import com.stuyfission.fissionlib.input.GamepadStatic;
 import com.stuyfission.fissionlib.util.Mechanism;
 
@@ -27,7 +26,7 @@ public class ScoringCommandBased extends Mechanism {
     private Command prepareArm = () -> arm.scorePos();
     private CommandSequence clampSequence = new CommandSequence()
             .addCommand(clampCone)
-            .addCommand(new WaitCommand(ScoringFSM.DELAY_SCORING))
+            .addWaitCommand(ScoringFSM.DELAY_SCORING)
             .addCommand(prepareArm)
             .build();
     ////
@@ -42,11 +41,11 @@ public class ScoringCommandBased extends Mechanism {
     private Command intakePosClamp = () -> clamp.intakePos();
     private CommandSequence scoreSequence = new CommandSequence()
             .addCommand(dropSlides)
-            .addCommand(new WaitCommand(ScoringFSM.DELAY_SCORING))
+            .addWaitCommand(ScoringFSM.DELAY_SCORING)
             .addCommand(openClamp)
-            .addCommand(new WaitCommand(ScoringFSM.DELAY_RETRACTING))
+            .addWaitCommand(ScoringFSM.DELAY_RETRACTING)
             .addCommand(retractSlides)
-            .addCommand(new WaitCommand(0.35))
+            .addWaitCommand(0.35)
             .addCommand(intakePosClamp)
             .build();
     ////
@@ -54,7 +53,7 @@ public class ScoringCommandBased extends Mechanism {
     private CommandSequence resetSequence = new CommandSequence()
             .addCommand(openClamp)
             .addCommand(retractSlides)
-            .addCommand(new WaitCommand(0.35))
+            .addWaitCommand(0.35)
             .addCommand(intakePosClamp)
             .build();
 
@@ -66,6 +65,7 @@ public class ScoringCommandBased extends Mechanism {
     @Override
     public void init(HardwareMap hwMap) {
         slidesMotors.init(hwMap);
+        slidesMotors.setMotionConstraints(200);
         arm.init(hwMap);
         clamp.init(hwMap);
 

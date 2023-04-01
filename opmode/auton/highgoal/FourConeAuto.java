@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode.opmode.auton.highgoal;
 
-import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryAccelerationConstraint;
 import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryVelocityConstraint;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
@@ -8,10 +7,10 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
-import org.firstinspires.ftc.teamcode.hardware.Arm;
-import org.firstinspires.ftc.teamcode.hardware.Clamp;
-import org.firstinspires.ftc.teamcode.hardware.SignalSleeveWebcam;
-import org.firstinspires.ftc.teamcode.hardware.SlidesMotors;
+import org.firstinspires.ftc.teamcode.hardware.mechanisms.Arm;
+import org.firstinspires.ftc.teamcode.hardware.mechanisms.Clamp;
+import org.firstinspires.ftc.teamcode.hardware.mechanisms.SignalSleeveWebcam;
+import org.firstinspires.ftc.teamcode.hardware.mechanisms.SlidesMotors;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 
 import org.firstinspires.ftc.teamcode.opmode.auton.AutoConstants;

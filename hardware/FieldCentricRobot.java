@@ -5,6 +5,9 @@ import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.stuyfission.fissionlib.util.Mechanism;
 
+import org.firstinspires.ftc.teamcode.hardware.drivebase.FieldCentricDrivetrain;
+import org.firstinspires.ftc.teamcode.hardware.mechanisms.ScoringFSM;
+
 public class FieldCentricRobot extends Mechanism {
 
     private FieldCentricDrivetrain dt = new FieldCentricDrivetrain(opMode);

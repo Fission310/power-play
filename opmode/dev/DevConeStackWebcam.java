@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.teamcode.hardware.ConeStackWebcam;
+import org.firstinspires.ftc.teamcode.hardware.mechanisms.ConeStackWebcam;
 
 @TeleOp (name = "Dev Cone Stack Webcam", group = "dev")
 public class DevConeStackWebcam extends LinearOpMode {

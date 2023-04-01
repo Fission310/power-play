@@ -5,8 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
-import org.firstinspires.ftc.teamcode.hardware.SignalSleeveWebcam;
-import org.firstinspires.ftc.teamcode.opmode.auton.AutoConstants;
+import org.firstinspires.ftc.teamcode.hardware.mechanisms.SignalSleeveWebcam;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 
 @Autonomous (name = "Red Park Auto", group = "_ared")

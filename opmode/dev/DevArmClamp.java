@@ -3,9 +3,8 @@ package org.firstinspires.ftc.teamcode.opmode.dev;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.firstinspires.ftc.teamcode.hardware.Arm;
-import org.firstinspires.ftc.teamcode.hardware.Clamp;
-import org.firstinspires.ftc.teamcode.hardware.ConeSensor;
+import org.firstinspires.ftc.teamcode.hardware.mechanisms.Arm;
+import org.firstinspires.ftc.teamcode.hardware.mechanisms.Clamp;
 
 @TeleOp (name = "Dev Arm & Clamp", group = "dev")
 public class DevArmClamp extends LinearOpMode {

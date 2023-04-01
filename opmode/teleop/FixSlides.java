@@ -4,9 +4,9 @@ import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.firstinspires.ftc.teamcode.hardware.Arm;
-import org.firstinspires.ftc.teamcode.hardware.Drivetrain;
-import org.firstinspires.ftc.teamcode.hardware.SlidesMotors;
+import org.firstinspires.ftc.teamcode.hardware.mechanisms.Arm;
+import org.firstinspires.ftc.teamcode.hardware.drivebase.Drivetrain;
+import org.firstinspires.ftc.teamcode.hardware.mechanisms.SlidesMotors;
 
 @TeleOp (name = "FIX Slides", group = "_zmain")
 @Config

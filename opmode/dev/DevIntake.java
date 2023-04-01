@@ -3,7 +3,7 @@ package org.firstinspires.ftc.teamcode.opmode.dev;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.firstinspires.ftc.teamcode.hardware.Intake;
+import org.firstinspires.ftc.teamcode.hardware.mechanisms.Intake;
 
 @TeleOp (name = "Dev Intake", group = "dev")
 public class DevIntake extends LinearOpMode {

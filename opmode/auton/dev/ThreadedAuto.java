@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.opmode.auton;
+package org.firstinspires.ftc.teamcode.opmode.auton.dev;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
@@ -12,8 +12,8 @@ import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 @Autonomous (name = "Threaded Auto", group = "dev")
 public class ThreadedAuto extends LinearOpMode {
 
-    private volatile SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
-    private volatile TwoWheelTrackingLocalizer localizer = new TwoWheelTrackingLocalizer(hardwareMap, drive);
+    private volatile SampleMecanumDrive drive;
+    private volatile TwoWheelTrackingLocalizer localizer;
 
     private static volatile Pose2d poseEstimate;
     private static volatile Pose2d poseVelocity;
@@ -34,6 +34,9 @@ public class ThreadedAuto extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
+
+         drive = new SampleMecanumDrive(hardwareMap);
+         localizer = new TwoWheelTrackingLocalizer(hardwareMap, drive);
 
         TrajectorySequence sequence = drive.trajectorySequenceBuilder(new Pose2d())
                 .forward(15)

@@ -4,23 +4,19 @@ import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryAccelerationConstraint;
 import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryVelocityConstraint;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.util.ElapsedTime;
 import com.stuyfission.fissionlib.command.AutoCommandMachine;
 import com.stuyfission.fissionlib.command.Command;
-import com.stuyfission.fissionlib.command.CommandImpl;
 import com.stuyfission.fissionlib.command.CommandSequence;
 
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
-import org.firstinspires.ftc.teamcode.hardware.Arm;
-import org.firstinspires.ftc.teamcode.hardware.Clamp;
-import org.firstinspires.ftc.teamcode.hardware.SignalSleeveWebcam;
-import org.firstinspires.ftc.teamcode.hardware.SlidesMotors;
+import org.firstinspires.ftc.teamcode.hardware.mechanisms.Arm;
+import org.firstinspires.ftc.teamcode.hardware.mechanisms.Clamp;
+import org.firstinspires.ftc.teamcode.hardware.mechanisms.SignalSleeveWebcam;
+import org.firstinspires.ftc.teamcode.hardware.mechanisms.SlidesMotors;
 import org.firstinspires.ftc.teamcode.opmode.auton.AutoConstants;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 
-@Disabled
 @SuppressWarnings("FieldMayBeFinal")
 @Autonomous (name = "HIGH COMMAND 6 Cone Auto", group = "_ared", preselectTeleOp = "Drift Comp Main")
 public class CommandBasedSixConeAuto extends LinearOpMode {

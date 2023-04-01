@@ -5,7 +5,8 @@ import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.stuyfission.fissionlib.util.Mechanism;
 
-import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.hardware.drivebase.Drivetrain;
+import org.firstinspires.ftc.teamcode.hardware.mechanisms.ScoringFSM;
 
 public class Robot extends Mechanism {
 

@@ -5,6 +5,9 @@ import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.stuyfission.fissionlib.util.Mechanism;
 
+import org.firstinspires.ftc.teamcode.hardware.drivebase.DriftCompensatedDrivetrain;
+import org.firstinspires.ftc.teamcode.hardware.mechanisms.ScoringFSM;
+
 public class DriftCompensatedRobot extends Mechanism {
 
     private DriftCompensatedDrivetrain dt = new DriftCompensatedDrivetrain(opMode);
