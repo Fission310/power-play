@@ -33,7 +33,7 @@ public class SlidesMotors extends Mechanism {
     public static double POS_GROUND = 0;
     public static double POS_PREP_ARM = 15;
     public static double POS_LOW = 20.2;
-    public static double POS_MEDIUM = 39;
+    public static double POS_MEDIUM = 39.7;
     public static double POS_HIGH = 58.4;
     public static double POS_HIGH_AUTO = 58.9;
 

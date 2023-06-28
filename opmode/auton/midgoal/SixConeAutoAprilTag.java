@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.opmode.auton.highgoal;
+package org.firstinspires.ftc.teamcode.opmode.auton.midgoal;
 
 import android.annotation.SuppressLint;
 
@@ -26,13 +26,12 @@ import org.openftc.easyopencv.OpenCvCameraRotation;
 
 import java.util.ArrayList;
 
-@Autonomous (name = "APRILTAG HIGH 6 Cone Auto", group = "_ared", preselectTeleOp = "Drift Comp Main")
+@Autonomous (name = "APRILTAG MID 6 Cone Auto", group = "_ared", preselectTeleOp = "Drift Comp Main")
 public class SixConeAutoAprilTag extends LinearOpMode {
 
     private Arm arm;
-    private Clamp clamp;
     private SlidesMotors slides;
-//    private final SignalSleeveWebcam signalSleeveWebcam = new SignalSleeveWebcam(this, "rightWebcam", SignalSleeveWebcam.ROBOT_SIDE.CONTROL_HUB);
+    //private final SignalSleeveWebcam signalSleeveWebcam = new SignalSleeveWebcam(this, "rightWebcam", SignalSleeveWebcam.ROBOT_SIDE.CONTROL_HUB);
 
     ElapsedTime time = new ElapsedTime();
 
@@ -55,17 +54,15 @@ public class SixConeAutoAprilTag extends LinearOpMode {
     private boolean canContinue = false;
     private boolean canSlidesExtend = false;
 
-    private static final double DELAY_PRELOAD_PICKUP = 3.9;
-    public static final double DELAY_PICKUP = 2.15;
+    private static final double DELAY_PRELOAD_PICKUP = 4.1; //4.15 (4.05) <- too fast i think
+    public static final double DELAY_PICKUP = 2.185; //2.185
 
     public Runnable scoreReady = () -> {
         try {
-            clamp.close();
-            Thread.sleep(500);
-            clamp.close();
+            Thread.sleep(150);
             // extend slides lvl 3
             // rotate arm to intake pos
-            slides.extendHighAuto();
+            slides.extendMedium();
             Thread.sleep(100);
             arm.autoScorePos();
         } catch (InterruptedException e) {
@@ -104,8 +101,9 @@ public class SixConeAutoAprilTag extends LinearOpMode {
     private static final int CONE_COUNT = 6;
     private static int conesScored;
 
-    private static final TrajectoryVelocityConstraint VELO = SampleMecanumDrive.getVelocityConstraint(43, Math.toRadians(250), Math.toRadians(250));
-    private static final TrajectoryAccelerationConstraint ACCEL = SampleMecanumDrive.getAccelerationConstraint(43);
+    //speed was 43
+    private static final TrajectoryVelocityConstraint VELO = SampleMecanumDrive.getVelocityConstraint(44, Math.toRadians(250), Math.toRadians(250));
+    private static final TrajectoryAccelerationConstraint ACCEL = SampleMecanumDrive.getAccelerationConstraint(44);
 
     private static final TrajectoryVelocityConstraint FAST_VELO = SampleMecanumDrive.getVelocityConstraint(60, Math.toRadians(250), Math.toRadians(250));
     private static final TrajectoryAccelerationConstraint FAST_ACCEL = SampleMecanumDrive.getAccelerationConstraint(52);
@@ -113,10 +111,10 @@ public class SixConeAutoAprilTag extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
-        clamp = new Clamp(this);
+        Clamp clamp = new Clamp(this);
         arm = new Arm(this);
         slides = new SlidesMotors(this);
-//        signalSleeveWebcam.init(hardwareMap);
+        //signalSleeveWebcam.init(hardwareMap);
         clamp.init(hardwareMap);
         arm.init(hardwareMap);
         slides.init(hardwareMap);
@@ -129,56 +127,54 @@ public class SixConeAutoAprilTag extends LinearOpMode {
         conesScored = 0;
 
         TrajectorySequence preload = drive.trajectorySequenceBuilder(AutoConstants.RR_START_POSE)
-                .setConstraints(FAST_VELO, FAST_ACCEL)
-                .lineToLinearHeading(AutoConstants.RR_ODO_PRELOAD_HIGH_GOAL_POSE_SIX)
-                .lineToConstantHeading(AutoConstants.RR_ODO_PRELOAD_HIGH_GOAL_VECTOR_SIX)
+                .setConstraints(VELO, ACCEL)
+                .lineToLinearHeading(AutoConstants.RR_ODO_PRELOAD_MID_GOAL_POSE)
+                .lineToConstantHeading(AutoConstants.RR_ODO_PRELOAD_MID_GOAL_VECTOR)
                 .build();
 
         TrajectorySequence preloadToConeStack = drive.trajectorySequenceBuilder(preload.end())
-                .setConstraints(FAST_VELO, FAST_ACCEL)
-                .lineToLinearHeading(AutoConstants.RR_ODO_PRELOAD_HIGH_GOAL_POSE_SIX)
-                .lineToLinearHeading(AutoConstants.RR_ODO_PRELOAD_CONE_STACK_POSE_SIX)
                 .setConstraints(VELO, ACCEL)
-                .lineToConstantHeading(AutoConstants.RR_ODO_CONE_STACK_VECTOR_SIX)
+                .lineToLinearHeading(AutoConstants.RR_ODO_PRELOAD_MID_GOAL_POSE)
+                .lineToLinearHeading(AutoConstants.RR_ODO_PRELOAD_CONE_STACK_POSE)
+                .lineToConstantHeading(AutoConstants.RR_ODO_CONE_STACK_VECTOR)
                 .build();
 
         TrajectorySequence coneStackToHighGoal = drive.trajectorySequenceBuilder(preloadToConeStack.end())
                 .setConstraints(VELO, ACCEL)
                 .setReversed(true)
                 .setTangent(AutoConstants.RR_HEADING)
-                .splineTo(AutoConstants.RR_ODO_HIGH_GOAL_VECTOR_SIX, AutoConstants.RR_ODO_HIGH_GOAL_HEADING)
+                .splineTo(AutoConstants.RR_ODO_MID_GOAL_VECTOR, AutoConstants.RR_ODO_MID_GOAL_HEADING)
                 .build();
 
         TrajectorySequence highGoalToConeStack = drive.trajectorySequenceBuilder(coneStackToHighGoal.end())
                 .setConstraints(VELO, ACCEL)
                 .setReversed(false)
-                .setTangent(AutoConstants.RR_ODO_CONE_STACK_TANGENT)
-                .splineTo(AutoConstants.RR_ODO_CONE_STACK_VECTOR_SIX, AutoConstants.RR_ODO_CONE_STACK_HEADING)
+                .setTangent(AutoConstants.RR_ODO_MID_CONE_STACK_TANGENT)
+                .splineTo(AutoConstants.RR_ODO_MID_CONE_STACK_VECTOR, AutoConstants.RR_ODO_CONE_STACK_HEADING)
                 .build();
 
         TrajectorySequence toParkTemp = drive.trajectorySequenceBuilder(coneStackToHighGoal.end())
                 .setConstraints(VELO, ACCEL)
                 .setReversed(false)
-                .setTangent(AutoConstants.RR_ODO_CONE_STACK_TANGENT)
-                .splineTo(AutoConstants.RR_ODO_MIDDLE_PARK_VECTOR, AutoConstants.RR_ODO_MIDDLE_PARK_HEADING)
+                .setTangent(AutoConstants.RR_ODO_MID_CONE_STACK_TANGENT)
+                .splineTo(AutoConstants.RR_ODO_MID_MIDDLE_PARK_VECTOR, AutoConstants.RR_ODO_MID_MIDDLE_PARK_HEADING)
                 .build();
 
         TrajectorySequence toLeftPark = drive.trajectorySequenceBuilder(toParkTemp.end())
                 .setConstraints(FAST_VELO, FAST_ACCEL)
-                .lineToLinearHeading(AutoConstants.RR_ODO_LEFT_PARK_POSE)
-                .back(9)
+                .lineToLinearHeading(AutoConstants.RR_ODO_MID_LEFT_PARK_POSE)
+                .forward(9)
                 .build();
 
         TrajectorySequence toMiddlePark = drive.trajectorySequenceBuilder(toParkTemp.end())
                 .setConstraints(VELO, ACCEL)
-//                .strafeLeft(2)
-                .lineToLinearHeading(new Pose2d(AutoConstants.RR_ODO_MIDDLE_PARK_VECTOR.getX() - 2, AutoConstants.RR_ODO_MIDDLE_PARK_VECTOR.getY(), Math.toRadians(90)))
+                .lineToLinearHeading(new Pose2d(AutoConstants.RR_ODO_MID_MIDDLE_PARK_VECTOR.getX() - 2, AutoConstants.RR_ODO_MID_MIDDLE_PARK_VECTOR.getY() - 2.8, Math.toRadians(265)))
                 .build();
 
         TrajectorySequence toRightPark = drive.trajectorySequenceBuilder(toParkTemp.end())
                 .setConstraints(FAST_VELO, FAST_ACCEL)
-                .lineToLinearHeading(AutoConstants.RR_ODO_RIGHT_PARK_POSE)
-                .back(9)
+                .lineToLinearHeading(AutoConstants.RR_ODO_MID_RIGHT_PARK_POSE)
+                .forward(9)
                 .build();
 
         clamp.close();
@@ -251,7 +247,6 @@ public class SixConeAutoAprilTag extends LinearOpMode {
 
         drive.followTrajectorySequenceAsync(preload);
         runThread(scoreReadyThread);
-        clamp.close();
 
         while (opModeIsActive() && !isStopRequested()) {
             telemetry.addData("cones scored", conesScored);
@@ -281,11 +276,9 @@ public class SixConeAutoAprilTag extends LinearOpMode {
                         clamp.intakePos();
                     }
                     if (!drive.isBusy()) {
-                        Pose2d currPose = drive.getPoseEstimate();
-                        drive.setPoseEstimate(new Pose2d(currPose.getX(), currPose.getY() + 0.1, currPose.getHeading()));
                         clamp.close();
                         if (canSlidesExtend) {
-                            slides.extendHighAuto();
+                            slides.extendMedium();
                             canSlidesExtend = false;
                         }
                         if (time.seconds() >= DELAY_PRELOAD_PICKUP) {
@@ -334,10 +327,10 @@ public class SixConeAutoAprilTag extends LinearOpMode {
                     }
                     if (!drive.isBusy()) {
                         Pose2d currPose = drive.getPoseEstimate();
-                        drive.setPoseEstimate(new Pose2d(currPose.getX(), currPose.getY() + 0.19, currPose.getHeading()));
+                        drive.setPoseEstimate(new Pose2d(currPose.getX(), currPose.getY() - 0.185, currPose.getHeading())); //-0.195
                         clamp.close();
                         if (canSlidesExtend) {
-                            slides.extendHighAuto();
+                            slides.extendMedium();
                             canSlidesExtend = false;
                         }
                         if (time.seconds() >= DELAY_PICKUP) {
@@ -354,21 +347,21 @@ public class SixConeAutoAprilTag extends LinearOpMode {
                         if (!drive.isBusy()) {
                             clamp.close();
                             drive.followTrajectorySequenceAsync(toRightPark);
-                            trajectoryState = TrajectoryState.IDLE;
+                            trajectoryState = org.firstinspires.ftc.teamcode.opmode.auton.midgoal.SixConeAutoAprilTag.TrajectoryState.IDLE;
                             time.reset();
                         }
                     } else if (tagOfInterest.id == Middle) {
                         if (!drive.isBusy()) {
                             clamp.close();
                             drive.followTrajectorySequenceAsync(toMiddlePark);
-                            trajectoryState = TrajectoryState.IDLE;
+                            trajectoryState = org.firstinspires.ftc.teamcode.opmode.auton.midgoal.SixConeAutoAprilTag.TrajectoryState.IDLE;
                             time.reset();
                         }
                     } else if (tagOfInterest.id == Left) {
                         if (!drive.isBusy()) {
                             clamp.close();
                             drive.followTrajectorySequenceAsync(toLeftPark);
-                            trajectoryState = TrajectoryState.IDLE;
+                            trajectoryState = org.firstinspires.ftc.teamcode.opmode.auton.midgoal.SixConeAutoAprilTag.TrajectoryState.IDLE;
                             time.reset();
                         }
                     }
@@ -386,7 +379,7 @@ public class SixConeAutoAprilTag extends LinearOpMode {
         }
     }
 
-    @SuppressLint ("DefaultLocale")
+    @SuppressLint("DefaultLocale")
     void tagToTelemetry(AprilTagDetection detection) {
         telemetry.addLine(String.format("\nDetected tag ID=%d", detection.id));
     }

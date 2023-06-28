@@ -20,7 +20,7 @@ public class ScoringFSM extends Mechanism {
     public static double DELAY_MEDIUM = 0.3;
     public static double DELAY_HIGH = 0.5;
     public static double DELAY_RETRACTING = 0.3;
-    public static double DELAY_SCORING = 0.07; //0.3
+    public static double DELAY_SCORING = 0.15; //0.07
 
     public static double DELAY_CLAMP_INTAKE = 1;
 
